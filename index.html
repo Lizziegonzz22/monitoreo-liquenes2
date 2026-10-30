@@ -3,120 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecolab MVD - Panel de Control de Bioindicadores</title>
-    <!-- Tailwind CSS para el diseño base -->
+    <title>Ecolab Bio-Simulator 63</title>
+    <!-- Tailwind para la estructura rápida -->
     <script src="https://tailwindcss.com"></script>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#0b0f19] text-slate-200 overflow-hidden h-screen flex flex-col antialiased">
+<body class="bg-[#05070f] text-slate-100 overflow-hidden h-screen flex flex-col antialiased">
 
-    <!-- Header Futurista -->
-    <header class="bg-[#111827]/80 backdrop-blur-md h-20 px-8 flex items-center justify-between border-b border-slate-800/60 shrink-0">
+    <!-- HUD de Cabecera Estilo Cyberpunk -->
+    <header class="h-20 px-8 flex items-center justify-between border-b border-purple-500/10 bg-[#080b16]/60 backdrop-blur-md shrink-0 relative">
+        <div class="absolute inset-x-0 bottom-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent"></div>
         <div class="flex items-center gap-4">
-            <div class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-bold text-lg shadow-lg shadow-emerald-500/20">
-                M
-                <span class="absolute -top-1 -right-1 flex h-3 w-3">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                </span>
+            <div class="h-11 w-11 rounded-xl bg-gradient-to-br from-purple-500 via-indigo-500 to-cyan-400 p-[1px] shadow-lg shadow-purple-500/20">
+                <div class="h-full w-full bg-[#070913] rounded-xl flex items-center justify-center font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 font-mono text-xl">
+                    ☣
+                </div>
             </div>
             <div>
-                <h1 class="text-sm font-extrabold tracking-wider text-white uppercase font-mono">ECO-LAB MONTEVIDEO</h1>
-                <p class="text-xs text-slate-400">Liceo N°63 "Idea Vilariño" • Red de Líquenes Corticícolas</p>
+                <h1 class="text-sm font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 font-['Orbitron']">BIO-SIMULADOR MVD</h1>
+                <p class="text-[11px] text-purple-400/80 font-bold uppercase tracking-wider font-mono">Liceo N°63 "Idea Vilariño" • Proyecto Aire Urbano</p>
             </div>
         </div>
-        
-        <!-- Contador de Estadísticas Rápido -->
-        <div class="flex gap-4 text-xs font-mono">
-            <div class="bg-slate-900/80 border border-slate-800 px-4 py-2 rounded-xl flex items-center gap-2">
-                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-                <span class="text-slate-400">Estaciones:</span>
-                <span id="stats-count" class="font-bold text-white text-sm">14</span>
-            </div>
+        <div class="font-mono text-xs text-cyan-400 bg-cyan-500/5 px-3 py-1.5 rounded-lg border border-cyan-500/20 shadow-inner tracking-widest uppercase">
+            Sistema Activo • No-Map engine
         </div>
     </header>
 
-    <!-- Área de Trabajo de Pantalla Completa -->
-    <main class="flex-1 flex flex-col md:flex-row relative overflow-hidden">
+    <!-- Simulador Principal -->
+    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
         
-        <!-- Panel Lateral Izquierdo: Ficha Técnica -->
-        <section class="w-full md:w-[440px] bg-[#111625] border-r border-slate-800/80 shadow-2xl flex flex-col z-10 h-2/5 md:h-full relative">
+        <!-- Panel Izquierdo: Controles del Reactor de Contaminación -->
+        <section class="w-full lg:w-[420px] bg-[#070914]/80 backdrop-blur-lg border-r border-slate-800/60 p-6 flex flex-col justify-between z-10 shrink-0 shadow-2xl relative">
             
-            <div class="p-6 border-b border-slate-800/60 bg-[#0d111c]">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Panel Operativo</h2>
-                <p class="text-xs text-slate-400 leading-relaxed mb-4">Mapea la pureza atmosférica urbana. Selecciona un punto o agrega uno nuevo.</p>
-                
-                <button id="btn-add-mode" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-3 px-4 rounded-xl text-xs font-bold tracking-wider uppercase transition-all shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 border border-emerald-400/20 active:scale-[0.98]">
-                    <span id="add-icon" class="text-sm">📍</span> <span id="add-text">Registrar Nueva Estación</span>
-                </button>
+            <div class="space-y-6">
+                <div>
+                    <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest font-['Orbitron'] mb-2">1. Seleccionar Escenario</h2>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="btn-prado" class="zone-btn active group" data-zone="Prado">
+                            <span class="text-xl block group-hover:scale-110 transition-transform">🌳</span>
+                            <span class="text-[10px] font-bold block mt-1">PRADO</span>
+                        </button>
+                        <button id="btn-colon" class="zone-btn group" data-zone="Colon">
+                            <span class="text-xl block group-hover:scale-110 transition-transform">🏡</span>
+                            <span class="text-[10px] font-bold block mt-1">COLÓN</span>
+                        </button>
+                        <button id="btn-centro" class="zone-btn group" data-zone="Centro">
+                            <span class="text-xl block group-hover:scale-110 transition-transform">🏭</span>
+                            <span class="text-[10px] font-bold block mt-1">CENTRO</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sliders Interactivos -->
+                <div class="space-y-4">
+                    <h2 class="text-xs font-black text-slate-400 uppercase tracking-widest font-['Orbitron']">2. Forzar Parámetros del Aire</h2>
+                    
+                    <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/50 space-y-2">
+                        <div class="flex justify-between text-xs font-mono">
+                            <span class="text-slate-400">Tránsito Vehicular:</span>
+                            <span id="val-traffic" class="text-cyan-400 font-bold">Bajo</span>
+                        </div>
+                        <input type="range" id="slider-traffic" min="0" max="100" value="15" class="w-full custom-range">
+                    </div>
+
+                    <div class="bg-slate-900/40 p-4 rounded-2xl border border-slate-800/50 space-y-2">
+                        <div class="flex justify-between text-xs font-mono">
+                            <span class="text-slate-400">Frecuencia de Líquenes (<span class="italic">fi</span>):</span>
+                            <span id="val-fi" class="text-emerald-400 font-bold">20 / 20</span>
+                        </div>
+                        <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-800 p-[2px]">
+                            <div id="bar-fi" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-300" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha de la Especie Mutante -->
+                <div class="bg-gradient-to-b from-slate-900/90 to-[#0d111d] p-5 rounded-2xl border border-slate-800/80 space-y-3 relative overflow-hidden shadow-xl">
+                    <div class="absolute -right-6 -bottom-6 text-6xl opacity-[0.03] select-none font-mono">LQN</div>
+                    <h3 class="text-xs font-black text-purple-400 font-['Orbitron'] uppercase tracking-wider flex items-center gap-1.5">
+                        <span class="h-2 w-2 rounded-full bg-purple-500 animate-pulse"></span> Estado Biológico Analizado
+                    </h3>
+                    <div id="lichen-info" class="space-y-2">
+                        <div class="text-lg font-extrabold text-white tracking-tight" id="lich-name">Usnea (Barba de Viejo)</div>
+                        <div class="text-[11px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-block" id="lich-status">Altamente Sensible</div>
+                        <p class="text-xs text-slate-400 leading-relaxed pt-1" id="lich-desc">Este liquen fruticuloso ramificado colgará de las ramas de tu árbol. Su presencia indica que el aire de la simulación está marcadamente limpio y puro.</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Información Cambiante Dinámica -->
-            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar" id="detail-panel">
-                <div class="text-center py-20" id="default-message">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 text-slate-600 text-3xl mb-4 animate-bounce">
-                        🛰️
-                    </div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Esperando Telemetría</p>
-                    <p class="text-xs max-w-[260px] mx-auto mt-2 text-slate-500 leading-relaxed">Haz clic sobre un nodo en el mapa interactivo para desplegar su ficha de recolección biológica.</p>
-                </div>
-
-                <!-- Ficha del Árbol Seleccionado -->
-                <div id="tree-details" class="hidden space-y-6 animate-fadeIn">
-                    <div class="flex items-start justify-between border-b border-slate-800/60 pb-5">
-                        <div>
-                            <span id="badge-zona" class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg border font-mono">ZONA</span>
-                            <h3 id="detail-id" class="text-3xl font-extrabold text-white mt-3 font-mono tracking-tight">ID-00</h3>
-                            <p id="detail-lugar" class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">📍 Ubicación</p>
-                        </div>
-                        <div class="text-center bg-[#0d111c] border border-slate-800 p-4 rounded-2xl min-w-[90px] shadow-inner">
-                            <span class="text-[10px] font-bold text-slate-500 block uppercase tracking-wider font-mono mb-1">Métrica fi</span>
-                            <span id="detail-fi" class="text-4xl font-black font-mono">00</span>
-                        </div>
-                    </div>
-
-                    <!-- Datos Técnicos -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-[#0d111c] p-4 rounded-2xl border border-slate-800/40">
-                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider font-mono mb-1">Especie Botánica</span>
-                            <span id="detail-especie" class="font-extrabold text-white text-sm">Plátano</span>
-                        </div>
-                        <div class="bg-[#0d111c] p-4 rounded-2xl border border-slate-800/40">
-                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider font-mono mb-1">Corteza</span>
-                            <span class="font-extrabold text-teal-400 text-sm flex items-center gap-1">🌿 Rugosa/Madura</span>
-                        </div>
-                    </div>
-
-                    <!-- Verificación de Protocolo Liceo 63 -->
-                    <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80 space-y-3">
-                        <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] font-mono border-b border-slate-800 pb-2 flex items-center gap-1.5">
-                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Protocolo de Muestreo Validado
-                        </div>
-                        <div class="grid grid-cols-1 gap-2 text-xs text-slate-400 font-mono">
-                            <div class="flex items-center gap-2 bg-[#0b0f19]/40 p-2 rounded-lg">✅ <span class="text-slate-300">Altura estándar: 70cm a 120cm</span></div>
-                            <div class="flex items-center gap-2 bg-[#0b0f19]/40 p-2 rounded-lg">✅ <span class="text-slate-300">Tronco vertical sin inclinación</span></div>
-                            <div class="flex items-center gap-2 bg-[#0b0f19]/40 p-2 rounded-lg">✅ <span class="text-slate-300">Sin interferencia de pintura o carteles</span></div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Datos de salud rápidos al pie del panel -->
+            <div class="bg-purple-950/10 border border-purple-500/10 p-4 rounded-xl font-mono text-[10px] text-purple-300/80 flex items-center gap-3">
+                <span class="text-xl">🫁</span>
+                <p id="health-warning">Impacto en Salud: Óptimo. Aire puro sin riesgos respiratorios detectados en la población de Montevideo.</p>
             </div>
         </section>
 
-        <!-- Sección del Mapa Esquemático de Montevideo -->
-        <section class="flex-1 h-3/5 md:h-full relative bg-[#090d16] flex items-center justify-center p-6 select-none">
-            <div id="map-wrapper" class="w-full h-full max-w-[900px] max-h-[700px] relative rounded-3xl bg-[#0e1322] border border-slate-800/80 shadow-2xl p-4 overflow-hidden flex items-center justify-center">
-                <!-- SVG Canvas Inyectado por JS -->
-            </div>
+        <!-- Lienzo de Animación Central (El árbol vivo interactivo) -->
+        <section class="flex-1 h-3/5 lg:h-full relative flex items-center justify-center p-6 bg-radial-dark">
             
-            <!-- Leyenda Gráfica -->
-            <div class="absolute bottom-10 right-10 bg-[#111625]/90 border border-slate-800 p-4 rounded-2xl flex flex-col gap-3 text-[10px] font-mono backdrop-blur-md shadow-xl z-20">
-                <div class="text-slate-500 font-bold border-b border-slate-800/60 pb-1.5 uppercase tracking-wider">PUREZA DEL AIRE (fi)</div>
-                <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-gradient-to-tr from-rose-500 to-red-400 shadow-lg shadow-red-500/20"></span> Crítica / Tránsito Alto (0-6)</div>
-                <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-400 shadow-lg shadow-amber-500/20"></span> Moderada / Comercial (7-12)</div>
-                <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-lg shadow-emerald-500/20"></span> Óptima / Espacio Verde (13-20)</div>
+            <!-- Partículas de Polución de Humo de Fondo -->
+            <div class="absolute inset-0 pointer-events-none opacity-40 transition-all duration-700" id="pollution-cloud"></div>
+
+            <!-- Contenedor del Árbol Vectorial Dinámico -->
+            <div id="tree-container" class="w-full h-full max-w-[650px] max-h-[650px] flex items-center justify-center transition-all duration-500">
+                <!-- Se inyecta el árbol matemático aquí -->
+            </div>
+
+            <!-- Efecto de Scanner holográfico flotando -->
+            <div class="absolute left-6 bottom-6 bg-slate-950/80 border border-slate-800 p-4 rounded-2xl backdrop-blur-md shadow-xl text-left space-y-1 font-mono text-[10px] tracking-wider text-slate-400">
+                <div class="text-white font-bold mb-1">MÉTRICA MATEMÁTICA IPA</div>
+                <div>Fórmula: <span class="text-purple-400">Σ fi</span></div>
+                <div>Estado de Corteza: <span class="text-emerald-400 font-bold" id="cortex-state">Estable/Limpia</span></div>
             </div>
         </section>
     </main>
@@ -124,3 +124,4 @@
     <script src="app.js" defer></script>
 </body>
 </html>
+
