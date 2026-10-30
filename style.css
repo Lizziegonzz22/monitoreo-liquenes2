@@ -1,3 +1,4 @@
+/* --- CONFIGURACIÓN GLOBAL DE ALTA GAMA --- */
 * {
     margin: 0;
     padding: 0;
@@ -11,334 +12,229 @@ body {
     height: 100vh;
     width: 100vw;
     overflow: hidden;
-    background-image: 
-        radial-gradient(rgba(30, 41, 59, 0.5) 1px, transparent 0),
-        radial-gradient(rgba(147, 51, 234, 0.05) 200px, transparent 400px);
-    background-size: 30px 30px, 100% 100%;
+    background-image: radial-gradient(rgba(30, 41, 59, 0.3) 1px, transparent 0);
+    background-size: 20px 20px;
 }
 
-.dashboard-container {
+/* DISTRIBUCIÓN DEL LABORATORIO CIBERNÉTICO */
+.lab-wrapper {
     display: flex;
-    flex-direction: column;
     height: 100vh;
+    width: 100vw;
     padding: 20px;
     gap: 20px;
 }
 
-.main-header {
-    background: linear-gradient(90deg, #0f121d 0%, #090b11 100%);
-    border: 1px solid #1e293b;
-    border-radius: 16px;
-    height: 75px;
-    padding: 0 30px;
+.control-panel, .data-panel {
+    width: 380px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.header-title {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.header-title h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 18px;
-    letter-spacing: 2px;
-    color: #fff;
-    font-weight: 700;
-}
-
-.header-title p {
-    font-size: 11px;
-    color: #64748b;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.scanner-status-dot {
-    width: 10px;
-    height: 10px;
-    background-color: #06b6d4;
-    border-radius: 50%;
-    box-shadow: 0 0 10px #06b6d4;
-    animation: pulse 2s infinite;
-}
-
-.badge-core {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 10px;
-    background-color: rgba(6, 182, 212, 0.06);
-    border: 1px solid rgba(6, 182, 212, 0.2);
-    padding: 6px 16px;
-    border-radius: 8px;
-    color: #06b6d4;
-    letter-spacing: 1px;
-}
-
-.workspace {
-    flex: 1;
-    display: flex;
+    flex-direction: column;
     gap: 20px;
-    height: calc(100% - 95px);
+    shrink: 0;
 }
 
-.panel {
-    background-color: rgba(15, 18, 29, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(30, 41, 59, 0.7);
-    border-radius: 24px;
+.simulation-stage {
+    flex: 1;
+    background-color: #020306;
+    border: 1px solid rgba(168, 85, 247, 0.15);
+    border-radius: 28px;
     padding: 25px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-}
-
-.left-panel, .right-panel {
-    width: 380px;
-    shrink: 0;
-}
-
-.center-panel {
-    flex: 1;
     align-items: center;
     justify-content: center;
-    background-color: rgba(7, 9, 15, 0.9);
-    border: 1px solid rgba(147, 51, 234, 0.15);
-    box-shadow: inset 0 0 60px rgba(0,0,0,0.9);
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.9);
 }
 
-.panel-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.section-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 11px;
-    color: #94a3b8;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.button-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.station-btn {
-    background-color: #0d1017;
+/* COMPONENTES DE INTERFAZ */
+.panel-header {
+    background-color: #0f121f;
     border: 1px solid #1e293b;
+    padding: 16px 20px;
     border-radius: 16px;
-    padding: 16px;
     display: flex;
     align-items: center;
     gap: 15px;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    width: 100%;
+}
+.panel-header h1 { font-family: 'Orbitron', sans-serif; font-size: 15px; color: #fff; letter-spacing: 1px; }
+.panel-header p { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+
+.pulse-core {
+    width: 10px;
+    height: 10px;
+    background-color: #a855f7;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #a855f7;
+    animation: corePulse 2s infinite;
 }
 
-.station-btn:hover {
-    border-color: #4f46e5;
-    background-color: #121724;
-    transform: translateY(-2px);
-}
-
-.station-btn.active {
-    background: linear-gradient(135deg, #1e1b4b 0%, #110724 100%);
-    border-color: #a855f7;
-    box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);
-}
-
-.btn-indicator {
-    width: 8px;
-    height: 30px;
-    border-radius: 4px;
-    shrink: 0;
-}
-.code-red { background-color: #ef4444; box-shadow: 0 0 10px #ef4444; }
-.code-green { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
-
-.btn-text strong {
-    display: block;
-    font-size: 14px;
-    color: #fff;
-}
-.btn-text small {
-    font-size: 11px;
-    color: #64748b;
-}
-
-.telemetry-box {
-    background-color: #080a10;
+.panel-card {
+    background-color: rgba(15, 18, 31, 0.8);
+    backdrop-filter: blur(10px);
     border: 1px solid #1e293b;
+    border-radius: 20px;
     padding: 20px;
-    border-radius: 16px;
-}
-
-.data-row {
     display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(30, 41, 59, 0.4);
-    font-size: 12px;
-}
-.data-row:last-child { border-bottom: none; }
-
-.label { color: #64748b; font-weight: 500; }
-.value { font-weight: 700; font-family: monospace; }
-.text-red { color: #f87171; }
-.text-green { color: #34d399; }
-.text-cyan { color: #22d3ee; }
-.text-amber { color: #fbbf24; }
-
-/* MICROSCOPIO CENTRAL */
-.microscope-casing {
-    width: 360px;
-    height: 480px;
-    background-color: #111422;
-    border: 6px solid #1e293b;
-    border-radius: 40px;
-    padding: 15px;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.6);
-    position: relative;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.lens-rim {
+.card-title { font-family: 'Orbitron', sans-serif; font-size: 11px; color: #94a3b8; letter-spacing: 1px; }
+.card-subtitle { font-size: 11px; color: #475569; }
+
+/* INYECTOR SLIDER TÁCTIL */
+.slider-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#smog-slider {
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
-    height: 100%;
-    border-radius: 28px;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+    outline: none;
+    cursor: pointer;
+}
+#smog-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #05070c;
+    box-shadow: 0 0 15px rgba(255,255,255,0.6);
+}
+
+.slider-labels { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; font-family: monospace; }
+.metric-display { display: flex; justify-content: space-between; font-size: 12px; background-color: #090b12; padding: 10px; border-radius: 10px; margin-top: 5px; }
+.metric-label { color: #64748b; }
+.metric-val { font-weight: 800; }
+
+/* RECTOR DE CONTAMINACIÓN ATMOSFÉRICA FLUIDA */
+.environment-container {
+    width: 100%;
+    max-width: 480px;
+    height: 520px;
+    border-radius: 24px;
+    position: relative;
     overflow: hidden;
-    border: 3px solid #000;
-    box-shadow: 0 0 30px rgba(0,0,0,1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 1s ease-in-out;
+    border: 4px solid #1e293b;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
 }
 
-.lens-viewport {
-    width: 100%;
+/* Escenarios de Atmósfera con Gradientes */
+.bg-prado-clean { background: linear-gradient(180deg, #091a18 0%, #030708 100%); }
+.bg-colon-medium { background: linear-gradient(180deg, #241a0b 0%, #050503 100%); border-color: #d97706; }
+.bg-centro-smog { background: linear-gradient(180deg, #2e1115 0%, #0a0304 100%); border-color: #dc2626; }
+
+/* EL TRONCO DEL ÁRBOL EN ALTA FIDELIDAD */
+.tree-cortex-system {
+    width: 180px;
     height: 100%;
+    background-color: #1a1512;
     position: relative;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.9), 10px 0 30px rgba(0,0,0,0.5);
+    border-left: 2px solid #2e231c;
+    border-right: 2px solid #2e231c;
 }
+.cortex-line { position: absolute; top: 0; width: 4px; height: 100%; background-color: #0c0907; opacity: 0.7; }
+.L1 { left: 40px; }
+.L2 { left: 90px; }
+.L3 { left: 140px; }
 
-.texture-centro {
-    background: #27272a;
-    background-image: repeating-linear-gradient(0deg, #141416, #141416 3px, #27272a 3px, #27272a 15px);
-}
-
-.texture-prado {
-    background: #523b2e;
-    background-image: repeating-linear-gradient(90deg, #33241c, #33241c 5px, #523b2e 5px, #523b2e 20px);
-}
-
-.hologram-grid {
+/* MATRIZ DE REJILLA FLOTANTE INTERACTIVA */
+.grid-overlay-container {
     position: absolute;
-    inset: 0;
+    inset: 20px;
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+    transition: opacity 0.4s;
+}
+.grid-header-ui { display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 10px; color: #22d3ee; background-color: rgba(5,7,12,0.85); padding: 6px 12px; border-radius: 8px 8px 0 0; border: 1px solid rgba(34,211,238,0.2); }
+.toggle-grid-btn { background: #1e293b; color: #fff; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 9px; }
+.toggle-grid-btn:hover { background-color: #334155; }
+
+.hologram-matrix {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(10, 1fr);
-    z-index: 20;
+    border-left: 1px solid rgba(34,211,238,0.2);
+    border-bottom: 1px solid rgba(34,211,238,0.2);
+    background-color: rgba(0, 0, 0, 0);
 }
 
-.grid-cell {
-    border: 0.5px solid rgba(6, 182, 212, 0.15);
-    transition: all 0.3s;
+.matrix-cell {
+    border-right: 1px solid rgba(34,211,238,0.2);
+    border-top: 1px solid rgba(34,211,238,0.2);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.matrix-cell:hover { background-color: rgba(34, 211, 238, 0.15); }
+.matrix-cell.counted-active {
+    background-color: rgba(34, 211, 238, 0.25) !important;
+    box-shadow: inset 0 0 10px rgba(34, 211, 238, 0.5);
 }
 
-.grid-cell.glow-red {
-    background-color: rgba(239, 68, 68, 0.12);
-    border: 1px solid rgba(239, 68, 68, 0.4);
-}
-.grid-cell.glow-green {
-    background-color: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-}
-
-.organic-blob {
+/* LÍQUENES DINÁMICOS BIOLÓGICOS */
+#lichen-garden { position: absolute; inset: 0; pointer-events: none; z-index: 20; }
+.lichen-element {
     position: absolute;
-    width: 50px;
-    height: 38px;
-    border-radius: 40%;
-    mix-blend-mode: hard-light;
-    filter: blur(0.5px);
-    z-index: 10;
-    transform: rotate(8deg);
-    transition: all 0.5s ease-in-out;
+    border-radius: 50%;
+    mix-blend-mode: screen;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(0);
+    opacity: 0;
 }
+.lichen-element.spawned { transform: scale(1); opacity: 0.9; }
 
-.laser-scanner {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, #a855f7, transparent);
-    box-shadow: 0 0 12px #a855f7;
-    z-index: 30;
-    animation: scan 4s linear infinite;
-}
+/* COMPUTADOR DIGITAL (PANTALLA DE DATOS) */
+.diagnostic-terminal { border-color: rgba(34,211,238,0.3); }
+.digital-screen { background-color: #04060a; border: 1px solid #1e293b; border-radius: 12px; padding: 15px; font-family: monospace; font-size: 12px; display: flex; flex-direction: column; gap: 8px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); }
+.screen-row { display: flex; justify-content: space-between; color: #475569; }
+.border-top { border-top: 1px solid #1e293b; padding-top: 8px; margin-top: 4px; }
 
-.viewer-legend {
-    font-size: 11px;
-    font-family: monospace;
-    color: #475569;
-    margin-top: 15px;
-}
+/* ADVERTENCIAS MÉDICAS */
+.alert-system { padding: 18px; border-left: 5px solid; border-radius: 16px; display: flex; flex-direction: column; gap: 6px; }
+.border-green { background-color: rgba(16,185,129,0.03); border-color: #10b981; }
+.border-amber { background-color: rgba(245,158,11,0.03); border-color: #f59e0b; }
+.border-red { background-color: rgba(239,68,68,0.03); border-color: #ef4444; }
 
-.diagnostic-card {
-    background-color: #090c15;
-    border: 1px solid #1e293b;
-    padding: 20px;
-    border-radius: 20px;
-}
+.alert-header { display: flex; items-center: center; gap: 10px; }
+.alert-body { font-size: 11px; color: #94a3b8; line-height: 1.5; }
 
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+/* VARIABLES DE TEXTO DIRECTO */
+.text-green { color: #10b981 !important; }
+.text-amber { color: #f59e0b !important; }
+.text-red { color: #ef4444 !important; }
+.text-white { color: #fff; }
 
-.badge-tag {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 6px;
-    text-transform: uppercase;
-}
-.badge-red { background-color: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
-.badge-green { background-color: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+.species-status-card { border-radius: 14px; padding: 15px; border: 1px solid; transition: all 0.4s; }
+.state-clean { background-color: rgba(16,185,129,0.05); border-color: rgba(16,185,129,0.2); }
+.state-medium { background-color: rgba(245,158,11,0.05); border-color: rgba(245,158,11,0.2); }
+.state-toxic { background-color: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.2); }
 
-.mono-label { font-size: 10px; color: #475569; font-family: monospace; }
-.species-title { font-size: 18px; color: #fff; margin-top: 15px; font-weight: 800; }
-.species-desc { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-top: 10px; }
+.specie-title { font-size: 15px; font-weight: 800; color: #fff; }
+.specie-badge { font-size: 9px; font-family: monospace; font-weight: 700; text-transform: uppercase; margin-top: 4px; padding: 2px 6px; display: inline-block; border-radius: 4px; }
+.state-clean .specie-badge { background-color: #10b981; color: #fff; }
+.state-medium .specie-badge { background-color: #f59e0b; color: #000; }
+.state-toxic .specie-badge { background-color: #ef4444; color: #fff; }
 
-.alert-card {
-    border-radius: 20px;
-    padding: 20px;
-    display: flex;
-    gap: 15px;
-    align-items: flex-start;
-}
-.alert-red { background-color: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.15); color: #fca5a5; }
-.alert-green { background-color: rgba(5, 150, 105, 0.05); border: 1px solid rgba(5, 150, 105, 0.15); color: #a7f3d0; }
+.specie-text { font-size: 11px; color: #64748b; line-height: 1.5; margin-top: 8px; }
+.stage-footer { font-size: 11px; font-family: monospace; color: #475569; margin-top: 15px; text-align: center; }
 
-.alert-icon { font-size: 22px; shrink: 0; }
-.alert-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-.alert-desc { font-size: 11px; margin-top: 4px; opacity: 0.85; }
-
-@keyframes pulse {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; box-shadow: 0 0 15px #06b6d4; }
-}
-
-@keyframes scan {
-    0% { top: 15px; }
-    50% { top: 460px; }
-    100% { top: 15px; }
+@keyframes corePulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; box-shadow: 0 0 15px #a855f7; }
 }
 
