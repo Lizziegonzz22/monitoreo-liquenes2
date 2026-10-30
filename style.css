@@ -2,47 +2,73 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
+/* Fondo degradado futurista */
+.bg-radial-dark {
+    background: radial-gradient(circle at center, #0f152b 0%, #05070f 100%);
 }
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+
+/* Botones de zonas interactivos */
+.zone-btn {
+    background: #0d1222;
+    border: 1px solid #1e293b;
+    padding: 12px 6px;
+    border-radius: 16px;
+    color: #64748b;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Orbitron', sans-serif;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
+.zone-btn:hover {
+    color: #e2e8f0;
+    border-color: #3b82f6;
+    background: #111a36;
+}
+.zone-btn.active {
+    background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
+    border-color: #a855f7;
+    color: #f3e8ff;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+}
+
+/* Estilización del control deslizante (Slider) */
+.custom-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 5px;
     background: #1e293b;
-    border-radius: 10px;
+    outline: none;
 }
-
-/* Animación de entrada para la Ficha Técnica */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-fadeIn {
-    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Estilos de los nodos interactivos */
-.map-node {
+.custom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #06b6d4;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+    transition: transform 0.1s;
 }
-.map-node:hover {
-    transform: scale(1.3);
-    filter: brightness(1.2) drop-shadow(0 0 12px currentColor);
-}
-
-/* Modo captura con mira telescópica */
-.capture-active {
-    cursor: crosshair !important;
+.custom-range::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
 }
 
-/* Efectos visuales de los polígonos de zonas */
-.zone-poly {
-    transition: all 0.5s ease;
+/* Efecto de Nubes de Smog Dinámico */
+#pollution-cloud {
+    background: radial-gradient(circle, rgba(239,68,68,0) 0%, rgba(5,7,15,0) 100%);
 }
-.zone-poly:hover {
-    fill-opacity: 0.15;
-    stroke-width: 2px;
+
+/* Animación de oscilación para que el árbol parezca vivo */
+@keyframes wind {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(1deg) scale(1.01); }
+}
+.live-tree {
+    animation: wind 6s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+
+/* Animaciones para las esporas de líquenes */
+.lichen-spot {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
