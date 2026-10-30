@@ -1,212 +1,190 @@
-const wrapper = document.getElementById('map-wrapper');
-
-// Dimensiones de la rejilla esquemática
-const w = 1000;
-const h = 800;
-
-// Construcción del plano interactivo y visual de Montevideo
-const svgMap = `
-<svg id="mvd-interactive-map" viewBox="0 0 ${w} ${h}" xmlns="http://w3.org" class="w-full h-full">
-    <defs>
-        <!-- Gradientes Estéticos para el Agua y Fondos -->
-        <linearGradient id="waterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#0a0f1d" />
-            <stop offset="100%" stop-color="#070a14" />
-        </linearGradient>
-        <linearGradient id="coastGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#1e293b" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.1"/>
-        </linearGradient>
-    </defs>
-
-    <!-- Líneas de fondo tecnológicas (Grid) -->
-    <g stroke="#1e293b" stroke-width="0.5" stroke-dasharray="5,5" opacity="0.4">
-        ${Array.from({length: 20}, (_, i) => `<line x1="${i*50}" y1="0" x2="${i*50}" y2="${h}" />`).join('')}
-        ${Array.from({length: 16}, (_, i) => `<line x1="0" y1="${i*50}" x2="${w}" y2="${i*50}" />`).join('')}
-    </g>
-
-    <!-- Río de la Plata y Bahía de Montevideo -->
-    <path d="M 0,600 Q 250,560 400,640 T 600,550 Q 620,400 750,420 T 900,520 Q 950,550 1000,520 L 1000,800 L 0,800 Z" fill="url(#waterGrad)"/>
-    <path d="M 0,600 Q 250,560 400,640 T 600,550 Q 620,400 750,420 T 900,520 Q 950,550 1000,520" fill="none" stroke="#0ea5e9" stroke-width="3" opacity="0.5"/>
-
-    <!-- ÁREAS RELEVADAS CON ESTILO DE INTERFAZ CIENTÍFICA -->
-    <!-- COLÓN (Área Naranja) -->
-    <polygon points="150,150 400,120 370,320 120,350" fill="#f59e0b" fill-opacity="0.04" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,4" class="zone-poly"/>
-    <text x="140" y="145" fill="#f59e0b" font-family="JetBrains Mono" font-size="12" font-weight="bold" tracking-wider opacity="0.7">📍 ZONA COLÓN [INTERMEDIO]</text>
-
-    <!-- PRADO (Área Verde) -->
-    <polygon points="420,300 620,250 580,480 380,520" fill="#10b981" fill-opacity="0.04" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4" class="zone-poly"/>
-    <text x="410" y="290" fill="#10b981" font-family="JetBrains Mono" font-size="12" font-weight="bold" tracking-wider opacity="0.7">📍 ZONA PRADO [CONTROL]</text>
-
-    <!-- CENTRO (Área Roja) -->
-    <polygon points="630,500 850,470 880,650 660,680" fill="#ef4444" fill-opacity="0.04" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,4" class="zone-poly"/>
-    <text x="640" y="490" fill="#ef4444" font-family="JetBrains Mono" font-size="12" font-weight="bold" tracking-wider opacity="0.7">📍 ZONA CENTRO [CRÍTICO]</text>
-
-    <!-- Ejes de Avenidas Estilizadas -->
-    <path d="M 220,130 Q 420,280 750,560" fill="none" stroke="#334155" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
-    <path d="M 480,270 L 760,260" fill="none" stroke="#334155" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
-
-    <!-- Contenedor dinámico de Nodos -->
-    <g id="nodes-container"></g>
-</svg>
-`;
-
-wrapper.innerHTML = svgMap;
-const nodesContainer = document.getElementById('nodes-container');
-const svgEl = document.getElementById('mvd-interactive-map');
-
-let isAddMode = false;
-let idCounter = 13;
-
-// --- REGISTROS REALES DEL TRABAJO DE CAMPO DE TU ANTEPROYECTO ---
-const initialTrees = [
-    // Centro
-    { id: "CEN-01", x: 670, y: 530, lugar: "Héctor Gutiérrez Ruiz y San José", especie: "Plátano", fi: 11, zona: "Centro" },
-    { id: "CEN-02", x: 690, y: 540, lugar: "Héctor Gutiérrez Ruiz y San José", especie: "Plátano", fi: 12, zona: "Centro" },
-    { id: "CEN-03", x: 660, y: 550, lugar: "Héctor Gutiérrez Ruiz y San José", especie: "Plátano", fi: 11, zona: "Centro" },
-    { id: "CEN-04", x: 720, y: 570, lugar: "Zelmar Michelini", especie: "Fresno", fi: 12, zona: "Centro" },
-    { id: "CEN-05", x: 735, y: 580, lugar: "Zelmar Michelini", especie: "Paraíso", fi: 17, zona: "Centro" },
-    { id: "CEN-06", x: 750, y: 590, lugar: "Zelmar Michelini", especie: "Fresno", fi: 6, zona: "Centro" },
-    { id: "CEN-07", x: 765, y: 600, lugar: "Zelmar Michelini", especie: "Fresno", fi: 5, zona: "Centro" },
-    { id: "CEN-10", x: 780, y: 610, lugar: "Zelmar Michelini", especie: "Paraíso", fi: 17, zona: "Centro" },
-
-    // Prado
-    { id: "PRA-01", x: 450, y: 350, lugar: "Jardín Botánico", especie: "Plátano", fi: 0, zona: "Prado" },
-    { id: "PRA-02", x: 500, y: 330, lugar: "Av. Joaquín Suárez y Av. Millán", especie: "Plátano", fi: 12, zona: "Prado" },
-    { id: "PRA-03", x: 470, y: 410, lugar: "Senda Costanera Jules Laforgue", especie: "Plátano", fi: 14, zona: "Prado" },
-    { id: "PRA-04", x: 485, y: 420, lugar: "Senda Costanera Jules Laforgue", especie: "Ciprés pantanoso", fi: 20, zona: "Prado" },
-    { id: "PRA-05", x: 500, y: 430, lugar: "Senda Costanera Jules Laforgue", especie: "Ciprés pantanoso", fi: 20, zona: "Prado" },
-    { id: "PRA-11", x: 540, y: 390, lugar: "Avenida María E. Vaz Ferreira", especie: "Fresno", fi: 20, zona: "Prado" }
-];
-
-function getColor(fi) {
-    if(fi <= 6) return '#ef4444'; // Rojo neón
-    if(fi <= 12) return '#f59e0b'; // Ámbar
-    return '#10b981'; // Esmeralda
-}
-
-function drawNode(data) {
-    const color = getColor(data.fi);
-    const g = document.createElementNS("http://w3.org", "g");
-    g.setAttribute("class", "map-node");
-    g.setAttribute("style", `color: ${color}; transform-origin: ${data.x}px ${data.y}px;`);
-
-    // Anillo luminoso exterior (Halo)
-    const halo = document.createElementNS("http://w3.org", "circle");
-    halo.setAttribute("cx", data.x);
-    halo.setAttribute("cy", data.y);
-    halo.setAttribute("r", data.fi > 12 ? 15 : 10);
-    halo.setAttribute("fill", color);
-    halo.setAttribute("opacity", data.fi > 12 ? "0.2" : "0.1");
-    g.appendChild(halo);
-
-    // Núcleo del marcador
-    const core = document.createElementNS("http://w3.org", "circle");
-    core.setAttribute("cx", data.x);
-    core.setAttribute("cy", data.y);
-    core.setAttribute("r", 6);
-    core.setAttribute("fill", color);
-    core.setAttribute("stroke", "#ffffff");
-    core.setAttribute("stroke-width", "2");
-    g.appendChild(core);
-
-    nodesContainer.appendChild(g);
-
-    g.addEventListener('click', (e) => {
-        e.stopPropagation();
-        openDetails(data);
-    });
-}
-
-function openDetails(data) {
-    document.getElementById('default-message').classList.add('hidden');
-    const panel = document.getElementById('tree-details');
-    panel.classList.remove('hidden');
-
-    document.getElementById('detail-id').innerText = data.id;
-    document.getElementById('detail-lugar').innerText = `📍 ${data.lugar}`;
-    document.getElementById('detail-especie').innerText = data.especie;
-    document.getElementById('detail-fi').innerText = data.fi;
-
-    const badge = document.getElementById('badge-zona');
-    badge.innerText = data.zona;
-
-    // Colores dinámicos del panel según zona
-    if(data.zona === "Centro") {
-        badge.className = "text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono";
-        document.getElementById('detail-fi').className = "text-4xl font-black font-mono text-rose-500";
-    } else if(data.zona === "Prado") {
-        badge.className = "text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono";
-        document.getElementById('detail-fi').className = "text-4xl font-black font-mono text-emerald-400";
-    } else {
-        badge.className = "text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono";
-        document.getElementById('detail-fi').className = "text-4xl font-black font-mono text-amber-400";
+// --- CENTRAL DE DATOS DE SIMULACIÓN (BASADO EN TU ANTEPROYECTO) ---
+const simulationData = {
+    Prado: {
+        traffic: 10,
+        fi: 20,
+        trafficText: "Muy Bajo (Parque/Control)",
+        lichenName: "Usnea sp. (Barba de Viejo)",
+        lichenStatus: "Fruticuloso • Altamente Sensible",
+        lichenDesc: "Líquenes filamentosos colgantes de color verde pálido. Su presencia es el indicador más alto de aire puro en el Prado.",
+        health: "Impacto en Salud: Óptimo. Aire puro ideal sin riesgos respiratorios en el Prado.",
+        treeColor: "#10b981", // Verde vivo
+        lichenColor: "#34d399", // Turquesa radiante
+        leafOpacity: 0.9,
+        cloudColor: "rgba(16,185,129,0.03)"
+    },
+    Colon: {
+        traffic: 50,
+        fi: 12,
+        trafficText: "Moderado (Comercial / Avenidas)",
+        lichenName: "Flavoparmelia caperata / Ramalina",
+        lichenStatus: "Foliáceo • Resistencia Intermedia",
+        lichenDesc: "Líquenes folíaceos grandes verde-amarillentos. Indican condiciones de transición atmosférica en el barrio Colón.",
+        health: "Impacto en Salud: Aceptable. Concentración moderada de gases por combustión vehicular.",
+        treeColor: "#f59e0b", // Ámbar/Ocre
+        lichenColor: "#fbbf24", // Amarillo claro
+        leafOpacity: 0.5,
+        cloudColor: "rgba(245,158,11,0.05)"
+    },
+    Centro: {
+        traffic: 95,
+        fi: 5,
+        trafficText: "Crítico / Efecto Cañón Urbano",
+        lichenName: "Physcia urbana / Lepraria incana",
+        lichenStatus: "Crustoso • Altamente Tolerante",
+        lichenDesc: "Líquenes reducidos a costras grisáceas pegadas al tronco. Es lo único que sobrevive al dióxido de azufre del Centro.",
+        health: "Impacto en Salud: Alerta. Riesgo elevado de asma, afecciones cardiovasculares y daño pulmonar infantil.",
+        treeColor: "#475569", // Gris ceniza enfermo
+        lichenColor: "#94a3b8", // Gris opaco
+        leafOpacity: 0.1,
+        cloudColor: "rgba(239,68,68,0.18)" // Humo rojo/negro de polución
     }
-}
-
-// Dibujar árboles iniciales y actualizar contador
-initialTrees.forEach(t => drawNode(t));
-document.getElementById('stats-count').innerText = initialTrees.length;
-
-// --- LÓGICA DE AGREGAR PUNTO ---
-const btn = document.getElementById('btn-add-mode');
-const txt = document.getElementById('add-text');
-const icon = document.getElementById('add-icon');
-
-btn.addEventListener('click', () => {
-    isAddMode = !isAddMode;
-    if(isAddMode) {
-        svgEl.classList.add('capture-active');
-        btn.className = "w-full bg-gradient-to-r from-rose-500 to-red-500 text-white py-3 px-4 rounded-xl text-xs font-bold tracking-wider uppercase transition-all shadow-lg shadow-red-500/10 flex items-center justify-center gap-2 border border-rose-400/20";
-        txt.innerText = "Cancelar Registro Activo";
-        icon.innerText = "❌";
-    } else {
-        cancelAddMode();
-    }
-});
-
-function cancelAddMode() {
-    isAddMode = false;
-    svgEl.classList.remove('capture-active');
-    btn.className = "w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3 px-4 rounded-xl text-xs font-bold tracking-wider uppercase transition-all shadow-lg flex items-center justify-center gap-2 border border-emerald-400/20";
-    txt.innerText = "Registrar Nueva Estación";
-    icon.innerText = "📍";
-}
-
-svgEl.addEventListener('click', function(e) {
-    if (!isAddMode) return;
-
-    const bounds = svgEl.getBoundingClientRect();
-    const x = ((e.clientX - bounds.left) / bounds.width) * w;
-    const y = ((e.clientY - bounds.top) / bounds.height) * h;
-
-    const esp = prompt("Especie del Árbol (Plátano, Fresno, Paraíso, etc.):", "Plátano");
-    if (!esp) { cancelAddMode(); return; }
-
-    const fiVal = prompt("Frecuencia liquénica hallada (fi de 0 a 20):", "15");
-    if (fiVal === null) { cancelAddMode(); return; }
-    const fi = parseInt(fiVal) || 0;
-
-    const bar = prompt("Barrio/Zona (Centro, Prado, Colón):", "Colón");
-    if (!bar) { cancelAddMode(); return; }
-
-    const newTree = {
-        id: 
-            ${bar.substring(0,3).toUpperCase()}-${idCounter+
-        +},
-    x: Math.round(x),
-        y: Math.round(y),
-        lugar: Coordenadas Plano: [X: ${Math.round(x)}, Y: 
-    ${Math.round(y)}],
-especie: esp,
-fi: fi,
-zona: bar.charAt(0).toUpperCase() + 
-    bar.slice(1).toLowerCase()
 };
-initialTrees.push(newTree);
-drawNode(newTree);
-openDetails(newTree);
-document.getElementById('stats-count').innerText = initialTrees.length;
-cancelAddMode();
-});
+
+// --- RENDERIZADOR DEL ÁRBOL MATEMÁTICO EN SVG ---
+const container = document.getElementById('tree-container');
+
+function buildTreeSVG() {
+    return `
+    <svg id="live-tree-svg" viewBox="0 0 600 600" xmlns="http://w3.org" class="w-full h-full live-tree">
+        <!-- Raíces y Suelo Tecnológico -->
+        <path d="M 180,560 Q 300,540 420,560 L 390,580 L 210,580 Z" fill="#1e293b" opacity="0.3"/>
+        <line x1="150" y1="560" x2="450" y2="560" stroke="#334155" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- TRONCO PRINCIPAL (Geometría orgánica agrietada) -->
+        <path id="tree-trunk" d="M 280,560 Q 290,380 260,280 Q 240,200 200,150 L 220,145 Q 260,190 280,260 Q 310,380 320,560 Z" fill="#475569" transition="all 0.5s"/>
         
+        <!-- Ramas Secundarias Izquierda y Derecha -->
+        <path id="branch-left" d="M 270,330 Q 200,280 150,280 L 150,270 Q 210,270 273,315 Z" fill="#475569"/>
+        <path id="branch-right" d="M 295,310 Q 380,240 430,220 L 435,230 Q 380,250 293,325 Z" fill="#475569"/>
+
+        <!-- FOLLAJE / HOJAS FLOTANTES (Cambian su opacidad y color) -->
+        <g id="foliage-group" class="transition-all duration-700">
+            <!-- Copa Alta -->
+            <circle cx="210" cy="140" r="45" fill="#10b981" class="tree-leaf" />
+            <circle cx="250" cy="120" r="55" fill="#10b981" class="tree-leaf" />
+            <!-- Copa Izquierda -->
+            <circle cx="140" cy="270" r="40" fill="#10b981" class="tree-leaf" />
+            <!-- Copa Derecha -->
+            <circle cx="420" cy="220" r="45" fill="#10b981" class="tree-leaf" />
+        </g>
+
+        <!-- RED DE COMUNIDADES DE LÍQUENES EN LA CORTEZA -->
+        <g id="lichen-group">
+            <!-- Líquenes en la base del tronco -->
+            <circle cx="295" cy="510" r="14" class="lichen-spot" />
+            <circle cx="305" cy="460" r="9" class="lichen-spot" />
+            <!-- Líquenes en la zona media expuesta al aire -->
+            <circle cx="285" cy="390" r="16" class="lichen-spot" />
+            <circle cx="275" cy="340" r="11" class="lichen-spot" />
+            <!-- Líquenes colonizando las ramas -->
+            <circle cx="210" cy="290" r="8" class="lichen-spot" />
+            <circle cx="350" cy="265" r="12" class="lichen-spot" />
+        </g>
+    </svg>
+    `;
+}
+
+container.innerHTML = buildTreeSVG();
+
+// --- SISTEMA DE ACTUALIZACIÓN INTERACTIVO ---
+let activeZone = "Prado";
+
+function updateSimulation(zoneName) {
+    activeZone = zoneName;
+    const data = simulationData[zoneName];
+
+    // 1. Sincronizar controles e inputs de la UI
+    document.getElementById('slider-traffic').value = data.traffic;
+    document.getElementById('val-traffic').innerText = data.trafficText;
+    document.getElementById('val-fi').innerText = `${data.fi} / 20`;
+    
+    // Cambiar colores del texto de tránsito según riesgo
+    const trafficElement = document.getElementById('val-traffic');
+    if(zoneName === "Centro") trafficElement.className = "text-rose-500 font-bold animate-pulse";
+    else if(zoneName === "Colon") trafficElement.className = "text-amber-400 font-bold";
+    else trafficElement.className = "text-cyan-400 font-bold";
+
+    // Barra de progreso fi
+    const barFi = document.getElementById('bar-fi');
+    barFi.style.width = `${(data.fi / 20) * 100}%`;
+    if(data.fi <= 6) barFi.className = "h-full bg-gradient-to-r from-rose-600 to-red-500 rounded-full transition-all duration-500";
+    else if(data.fi <= 12) barFi.className = "h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-500";
+    else barFi.className = "h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500";
+
+    // 2. Cambiar la Ficha Biológica
+    document.getElementById('lich-name').innerText = data.lichenName;
+    document.getElementById('lich-desc').innerText = data.lichenDesc;
+    
+    const statusLabel = document.getElementById('lich-status');
+    statusLabel.innerText = data.lichenStatus;
+    if(zoneName === "Centro") statusLabel.className = "text-[11px] uppercase font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 inline-block";
+    else if(zoneName === "Colon") statusLabel.className = "text-[11px] uppercase font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 inline-block";
+    else statusLabel.className = "text-[11px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-block";
+
+    document.getElementById('health-warning').innerText = data.health;
+    document.getElementById('cortex-state').innerText = zoneName === "Centro" ? "Necrosis / Crítica" : (zoneName === "Colon" ? "Alterada" : "Estable / Limpia");
+    document.getElementById('cortex-state').className = zoneName === "Centro" ? "text-rose-500 font-bold" : (zoneName === "Colon" ? "text-amber-400 font-bold" : "text-emerald-400 font-bold");
+
+    // 3. MUTACIÓN DEL ÁRBOL EN TIEMPO REAL (Lógica SVG)
+    document.getElementById('tree-trunk').setAttribute("fill", data.treeColor);
+    document.getElementById('branch-left').setAttribute("fill", data.treeColor);
+    document.getElementById('branch-right').setAttribute("fill", data.treeColor);
+
+    // Cambiar opacidad y color de las hojas (Follaje marchito o ausente)
+    const leaves = document.querySelectorAll('.tree-leaf');
+    leaves.forEach(leaf => {
+        leaf.setAttribute("fill", data.treeColor === "#475569" ? "#64748b" : (data.treeColor === "#f59e0b" ? "#b45309" : "#10b981"));
+        leaf.setAttribute("fill-opacity", data.leafOpacity);
+    });
+
+    // Mutar los líquenes adheridos a la corteza
+    const spots = document.querySelectorAll('.lichen-spot');
+    spots.forEach(spot => {
+        spot.setAttribute("fill", data.lichenColor);
+        spot.setAttribute("fill-opacity", zoneName === "Centro" ? "0.4" : "0.85");
+        // En el centro los líquenes se encogen drásticamente
+        spot.setAttribute("stroke", zoneName === "Centro" ? "#475569" : "#ffffff");
+        spot.setAttribute("stroke-width", zoneName === "Centro" ? "1" : "2");
+    });
+
+    // Cambiar atmósfera de humo/smog de fondo
+    document.getElementById('pollution-cloud').style.background = `radial-gradient(circle, ${data.cloudColor} 0%, rgba(5,7,15,0) 70%)`;
+}
+
+// --- ESCUCHADORES DE CLIC EN LOS BOTONES DE BARRIO ---
+document.querySelectorAll('.zone-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
+        const button = e.currentTarget;
+        button.classList.add('active');
+        updateSimulation(button.getAttribute('data-zone'));
+    });
+});
+
+// --- ENLAZAR EL SLIDER PARA DETECTAR CAMBIOS MANUALES ---
+document.getElementById('slider-traffic').addEventListener('input', (e) => {
+    const value = parseInt(e.target.value);
+    
+    // Forzar cambios dinámicos según la posición libre del slider
+    if (value < 35) {
+        syncZoneUI('Prado');
+    } else if (value < 75) {
+        syncZoneUI('Colon');
+    } else {
+        syncZoneUI('Centro');
+    }
+    document.getElementById('slider-traffic').value = value; // Evita que se mueva el slider fijo
+});
+
+function syncZoneUI(zone) {
+    document.querySelectorAll('.zone-btn').forEach(b => {
+        if(b.getAttribute('data-zone') === zone) b.classList.add('active');
+        else b.classList.remove('active');
+    });
+    updateSimulation(zone);
+}
+
+// Arrancar simulación por defecto en el Prado
+updateSimulation("Prado");
+
