@@ -3,113 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIQUEN-SCAN // Simulador Atmosférico MVD</title>
-    <!-- Fuentes de diseño de alta gama -->
+    <title>Eco-Reactor MVD // Simulador de Líquenes</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <!-- Vinculación del archivo de estilos local -->
+    <link href="https://googleapis.com/css2?family=Orbitron:wght@500;800;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="dashboard-container">
+    <div class="lab-wrapper">
         
-        <!-- CABECERA ESTILO HUD -->
-        <header class="main-header">
-            <div class="header-title">
-                <div class="scanner-status-dot"></div>
+        <!-- PANEL DE CONTROL IZQUIERDO -->
+        <div class="control-panel">
+            <div class="panel-header">
+                <div class="pulse-core"></div>
                 <div>
-                    <h1>LIQUEN-SCAN v2.6</h1>
-                    <p>Liceo N°63 "Idea Vilariño" • Auditoría de Aire</p>
-                </div>
-            </div>
-            <div class="badge-core">SISTEMA BIO-ÓPTICO AUTÓNOMO</div>
-        </header>
-
-        <!-- ESPACIO DE TRABAJO -->
-        <div class="workspace">
-            
-            <!-- COLUMNA IZQUIERDA: CONTROLADORES -->
-            <div class="panel left-panel">
-                <div class="panel-section">
-                    <h2 class="section-title">1. Seleccionar Estación Real</h2>
-                    <div class="button-stack">
-                        <button id="btn-centro" class="station-btn active">
-                            <span class="btn-indicator code-red"></span>
-                            <div class="btn-text">
-                                <strong>Zelmar Michelini</strong>
-                                <small>Barrio Centro // Tránsito Crítico</small>
-                            </div>
-                        </button>
-                        <button id="btn-prado" class="station-btn">
-                            <span class="btn-indicator code-green"></span>
-                            <div class="btn-text">
-                                <strong>Vaz Ferreira</strong>
-                                <small>Barrio Prado // Zona de Control</small>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="panel-section telemetry-box">
-                    <h2 class="section-title">2. Telemetría del Entorno</h2>
-                    <div class="data-row">
-                        <span class="label">Hospedero Local:</span>
-                        <span id="data-tree" class="value text-amber">Cargando...</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="label">Frecuencia Directa (fi):</span>
-                        <span id="data-fi" class="value text-cyan">Cargando...</span>
-                    </div>
-                    <div class="data-row">
-                        <span class="label">Pureza Atmosférica:</span>
-                        <span id="data-purity" class="value">Cargando...</span>
-                    </div>
+                    <h1>REACTORES LICEO 63</h1>
+                    <p>Simulador de Impacto Atmosférico</p>
                 </div>
             </div>
 
-            <!-- COLUMNA CENTRAL: MICROSCOPIO INTERACTIVO -->
-            <div class="panel center-panel">
-                <div class="microscope-casing">
-                    <div class="lens-rim">
-                        <div id="microscope-lens" class="lens-viewport">
-                            <!-- Capa de Líquenes Orgánicos -->
-                            <div id="lichen-blobs-layer"></div>
-                            <!-- Rejilla de Hilos de Luz (Inyectada por JS) -->
-                            <div class="hologram-grid" id="hologram-grid"></div>
-                        </div>
+            <!-- INYECTOR DE TRÁNSITO VEHICULAR -->
+            <div class="panel-card shadow-neon">
+                <h2 class="card-title">💨 INYECTOR DE ESMOG URBANO</h2>
+                <p class="card-subtitle">Deslizá para forzar el flujo de caño de escape en Montevideo</p>
+                
+                <div class="slider-container">
+                    <input type="range" id="smog-slider" min="0" max="100" value="0">
+                    <div class="slider-labels">
+                        <span class="text-green">Aire Puro</span>
+                        <span class="text-amber">Colón</span>
+                        <span class="text-red">Centro</span>
                     </div>
-                    <!-- Láser flotante de barrido -->
-                    <div class="laser-scanner"></div>
-                </div>
-                <p class="viewer-legend">Muestra Óptica: Rejilla de Muestreo de 20x50 cm (Adosada a 1.20 metros)</p>
-            </div>
-
-            <!-- COLUMNA DERECHA: DIAGNÓSTICO -->
-            <div class="panel right-panel">
-                <div class="panel-section diagnostic-card">
-                    <div class="card-header">
-                        <span class="badge-tag" id="data-biotype">Cargando...</span>
-                        <span class="mono-label">Catálogo de Especies</span>
-                    </div>
-                    <h3 id="data-name" class="species-title">Cargando...</h3>
-                    <p id="data-desc" class="species-desc">Cargando análisis técnico...</p>
                 </div>
 
-                <div class="panel-section alert-card" id="health-card">
-                    <div class="alert-icon">⚠️</div>
-                    <div>
-                        <h4 class="alert-title">Estado de Alerta</h4>
-                        <p id="data-health" class="alert-desc">Analizando parámetros...</p>
-                    </div>
+                <div class="metric-display">
+                    <span class="metric-label">Tránsito Estimado:</span>
+                    <span id="txt-traffic" class="metric-val text-green">Zona de Control</span>
                 </div>
             </div>
 
+            <!-- MONITOREO DE ESPECIES EN TIEMPO REAL -->
+            <div class="panel-card">
+                <h2 class="card-title">🔬 BIOMASA COMPROBADA</h2>
+                <div id="lichen-species-box" class="species-status-card state-clean">
+                    <div id="specie-name" class="specie-title">Usnea (Barba de Viejo)</div>
+                    <div id="specie-type" class="specie-badge">Fruticuloso / Muy Sensible</div>
+                    <p id="specie-desc" class="specie-text">Requiere aire extremadamente puro. Desaparece por completo ante la mínima dosis de azufre.</p>
+                </div>
+            </div>
         </div>
+
+        <!-- VISOR CENTRAL DE TRONCO INTERACTIVO -->
+        <div class="simulation-stage">
+            <div id="atmosphere-glow" class="environment-container bg-prado-clean">
+                
+                <!-- REJILLA DE MUESTREO FLOTANTE -->
+                <div class="grid-overlay-container">
+                    <div class="grid-header-ui">
+                        <span>REJILLA METODOLÓGICA IPA (20x50 cm)</span>
+                        <button id="btn-toggle-grid" class="toggle-grid-btn">Ocultar Rejilla</button>
+                    </div>
+                    
+                    <!-- MATRIZ INTERACTIVA -->
+                    <div id="interactive-grid" class="hologram-matrix"></div>
+                </div>
+
+                <!-- EL TRONCO DEL ÁRBOL BIOLÓGICO -->
+                <div class="tree-cortex-system">
+                    <div class="cortex-line L1"></div>
+                    <div class="cortex-line L2"></div>
+                    <div class="cortex-line L3"></div>
+                    
+                    <!-- Capa donde brotan los líquenes dinámicamente -->
+                    <div id="lichen-garden"></div>
+                </div>
+
+            </div>
+            <p class="stage-footer">Hacé clic en los cuadrantes de la rejilla para registrar muestras en tu cuaderno de campo digital</p>
+        </div>
+
+        <!-- PANEL DE SALUD Y CUADERNO DIGITAL DERECHO -->
+        <div class="data-panel">
+            <div class="panel-card diagnostic-terminal">
+                <h2 class="card-title text-cyan">📊 COMPUTADOR DIGITAL IPA</h2>
+                <div class="digital-screen">
+                    <div class="screen-row">
+                        <span>Cuadrantes Totales:</span>
+                        <span class="text-white">40</span>
+                    </div>
+                    <div class="screen-row">
+                        <span>Muestras Registradas:</span>
+                        <span id="lbl-counted" class="text-cyan font-bold">0</span>
+                    </div>
+                    <div class="screen-row border-top">
+                        <span>Índice IPA Calculado:</span>
+                        <span id="lbl-ipa" class="text-green font-black text-lg">0 / 20</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-card alert-system border-green" id="health-alert-box">
+                <div class="alert-header">
+                    <span id="health-icon" class="text-xl">🌿</span>
+                    <h3 id="health-title" class="text-green font-bold">Entorno Oxigenado</h3>
+                </div>
+                <p id="health-text" class="alert-body">Las extensas áreas verdes amortiguan las emisiones. Entorno seguro para la salud de la población de Montevideo.</p>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Vinculación de la lógica al final del documento con atributo defer -->
     <script src="app.js" defer></script>
 </body>
 </html>
