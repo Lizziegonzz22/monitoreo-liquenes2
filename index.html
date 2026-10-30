@@ -3,109 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analizador Digital de Líquenes - Liceo 63</title>
-    <!-- Tailwind para estructura limpia -->
-    <script src="https://tailwindcss.com"></script>
+    <title>LIQUEN-SCAN // Simulador Atmosférico MVD</title>
+    <!-- Fuentes de diseño de alta gama -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Vinculación del archivo de estilos local -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#090b11] text-slate-100 min-h-screen flex flex-col font-['Plus_Jakarta_Sans'] antialiased">
+<body>
 
-    <!-- Encabezado de Laboratorio -->
-    <header class="p-6 bg-[#0f121d] border-b border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-        <div>
-            <h1 class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 font-mono">
-                🔍 SIMULADOR DE REJILLA IPA
-            </h1>
-            <p class="text-xs text-slate-400 mt-0.5 font-mono">Liceo N°63 "Idea Vilariño" • Trabajo de Campo de Líquenes</p>
-        </div>
-        <div class="bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-xl text-xs font-mono text-cyan-400 tracking-wider">
-            MÉTODO LEBLANC & DE SLOOVER
-        </div>
-    </header>
-
-    <!-- Contenedor de la Experiencia Biológica -->
-    <main class="flex-1 flex flex-col lg:flex-row p-6 gap-6 overflow-hidden max-w-7xl w-full mx-auto justify-center items-center">
+    <div class="dashboard-container">
         
-        <!-- Panel Izquierdo: Control de Datos Reales -->
-        <section class="w-full lg:w-[380px] flex flex-col gap-4 shrink-0">
+        <!-- CABECERA ESTILO HUD -->
+        <header class="main-header">
+            <div class="header-title">
+                <div class="scanner-status-dot"></div>
+                <div>
+                    <h1>LIQUEN-SCAN v2.6</h1>
+                    <p>Liceo N°63 "Idea Vilariño" • Auditoría de Aire</p>
+                </div>
+            </div>
+            <div class="badge-core">SISTEMA BIO-ÓPTICO AUTÓNOMO</div>
+        </header>
+
+        <!-- ESPACIO DE TRABAJO -->
+        <div class="workspace">
             
-            <!-- Selector de Estaciones Basado en el PDF -->
-            <div class="bg-[#0f121d] border border-slate-800 p-5 rounded-2xl shadow-xl">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest font-mono mb-3">📍 1. Seleccionar Estación</h2>
-                <div class="flex flex-col gap-2">
-                    <button id="btn-centro" class="zone-btn active" data-zone="Centro">
-                        <div class="flex justify-between items-center w-full">
-                            <span class="font-bold text-sm">Zona Centro (Zelmar Michelini)</span>
-                            <span class="text-[10px] bg-red-500/10 text-red-400 px-2 py-0.5 rounded font-mono">fi bajo</span>
+            <!-- COLUMNA IZQUIERDA: CONTROLADORES -->
+            <div class="panel left-panel">
+                <div class="panel-section">
+                    <h2 class="section-title">1. Seleccionar Estación Real</h2>
+                    <div class="button-stack">
+                        <button id="btn-centro" class="station-btn active">
+                            <span class="btn-indicator code-red"></span>
+                            <div class="btn-text">
+                                <strong>Zelmar Michelini</strong>
+                                <small>Barrio Centro // Tránsito Crítico</small>
+                            </div>
+                        </button>
+                        <button id="btn-prado" class="station-btn">
+                            <span class="btn-indicator code-green"></span>
+                            <div class="btn-text">
+                                <strong>Vaz Ferreira</strong>
+                                <small>Barrio Prado // Zona de Control</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section telemetry-box">
+                    <h2 class="section-title">2. Telemetría del Entorno</h2>
+                    <div class="data-row">
+                        <span class="label">Hospedero Local:</span>
+                        <span id="data-tree" class="value text-amber">Cargando...</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Frecuencia Directa (fi):</span>
+                        <span id="data-fi" class="value text-cyan">Cargando...</span>
+                    </div>
+                    <div class="data-row">
+                        <span class="label">Pureza Atmosférica:</span>
+                        <span id="data-purity" class="value">Cargando...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA CENTRAL: MICROSCOPIO INTERACTIVO -->
+            <div class="panel center-panel">
+                <div class="microscope-casing">
+                    <div class="lens-rim">
+                        <div id="microscope-lens" class="lens-viewport">
+                            <!-- Capa de Líquenes Orgánicos -->
+                            <div id="lichen-blobs-layer"></div>
+                            <!-- Rejilla de Hilos de Luz (Inyectada por JS) -->
+                            <div class="hologram-grid" id="hologram-grid"></div>
                         </div>
-                    </button>
-                    <button id="btn-prado" class="zone-btn" data-zone="Prado">
-                        <div class="flex justify-between items-center w-full">
-                            <span class="font-bold text-sm">Zona Prado (Vaz Ferreira)</span>
-                            <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-mono">fi máximo</span>
-                        </div>
-                    </button>
+                    </div>
+                    <!-- Láser flotante de barrido -->
+                    <div class="laser-scanner"></div>
                 </div>
+                <p class="viewer-legend">Muestra Óptica: Rejilla de Muestreo de 20x50 cm (Adosada a 1.20 metros)</p>
             </div>
 
-            <!-- Ficha Técnica del Tipo de Líquen en Muestreo -->
-            <div class="bg-[#0f121d] border border-slate-800 p-5 rounded-2xl shadow-xl flex-1 flex flex-col justify-between gap-4">
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] font-mono bg-cyan-500/10 text-cyan-400 px-2 py-1 rounded-md uppercase tracking-wider" id="comp-biotype">Biotipo</span>
-                        <span class="text-xs font-mono text-slate-500">Muestreo Multiespecífico</span>
+            <!-- COLUMNA DERECHA: DIAGNÓSTICO -->
+            <div class="panel right-panel">
+                <div class="panel-section diagnostic-card">
+                    <div class="card-header">
+                        <span class="badge-tag" id="data-biotype">Cargando...</span>
+                        <span class="mono-label">Catálogo de Especies</span>
                     </div>
-                    <h3 class="text-xl font-extrabold text-white tracking-tight" id="comp-name">Especie</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed" id="comp-desc">Descripción técnica del comportamiento ecológico frente al smog vehicular.</p>
+                    <h3 id="data-name" class="species-title">Cargando...</h3>
+                    <p id="data-desc" class="species-desc">Cargando análisis técnico...</p>
                 </div>
 
-                <!-- Indicador de Frecuencia Real del PDF -->
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800/60 font-mono text-xs space-y-2">
-                    <div class="flex justify-between">
-                        <span class="text-slate-500">Frecuencia total (<span class="italic">fi</span>):</span>
-                        <span id="comp-fi" class="font-bold text-white text-sm">0</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-500">Hospedero Común:</span>
-                        <span id="comp-tree" class="text-amber-400 font-bold">Árbol</span>
+                <div class="panel-section alert-card" id="health-card">
+                    <div class="alert-icon">⚠️</div>
+                    <div>
+                        <h4 class="alert-title">Estado de Alerta</h4>
+                        <p id="data-health" class="alert-desc">Analizando parámetros...</p>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- Panel Derecho: El Simulador de la Rejilla Científica -->
-        <section class="flex-1 bg-[#0f121d] rounded-2xl border border-slate-800 p-6 flex flex-col items-center justify-center relative w-full h-full min-h-[480px]">
-            
-            <div class="text-center mb-4">
-                <p class="text-xs font-mono text-slate-400">Cuadrícula Transparente de Campo (20cm x 50cm)</p>
-                <p class="text-[11px] text-slate-500 font-mono mt-0.5">Toca los cuadrantes iluminados para verificar cómo se cuenta la frecuencia de colonización</p>
-            </div>
+        </div>
+    </div>
 
-            <!-- CONTENEDOR DE LA CORTEZA + REJILLA -->
-            <div id="bark-viewport" class="relative w-full max-w-[280px] h-[450px] rounded-xl overflow-hidden border-2 border-slate-700 shadow-2xl flex items-center justify-center">
-                
-                <!-- Fondo Dinámico de la Corteza del Árbol (Cambia por CSS) -->
-                <div id="tree-bark-bg" class="absolute inset-0 transition-all duration-700"></div>
-
-                <!-- Capa con las Colonias de Líquenes Virtuales -->
-                <div id="lichen-colonies-layer" class="absolute inset-0 pointer-events-none z-10 transition-all duration-500"></div>
-
-                <!-- LA REJILLA METODOLÓGICA (Subcuadrantes interactivos) -->
-                <div id="sampling-grid" class="absolute inset-0 grid grid-cols-4 grid-rows-10 z-20 border border-cyan-500/20">
-                    <!-- Los 40 subcuadrantes se auto-inyectan aquí con JS -->
-                </div>
-            </div>
-
-            <!-- Contador Dinámico de Interacción -->
-            <div class="mt-4 text-center font-mono text-xs text-cyan-400">
-                Cuadrantes Identificados en Campo: <span id="active-squares" class="font-bold text-white bg-slate-950 px-2 py-0.5 rounded border border-slate-800">0</span>
-            </div>
-        </section>
-    </main>
-
+    <!-- Vinculación de la lógica al final del documento con atributo defer -->
     <script src="app.js" defer></script>
 </body>
 </html>
