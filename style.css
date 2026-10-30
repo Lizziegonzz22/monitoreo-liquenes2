@@ -1,74 +1,69 @@
+/* Estilos del panel y fuentes */
 body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-image: radial-gradient(#161925 1px, transparent 1px);
+    background-size: 20px 20px;
 }
 
-/* Fondo degradado futurista */
-.bg-radial-dark {
-    background: radial-gradient(circle at center, #0f152b 0%, #05070f 100%);
-}
-
-/* Botones de zonas interactivos */
+/* Botones de Estación */
 .zone-btn {
-    background: #0d1222;
-    border: 1px solid #1e293b;
-    padding: 12px 6px;
-    border-radius: 16px;
-    color: #64748b;
+    width: 100%;
+    background: #151926;
+    border: 1px solid #23293d;
+    padding: 14px;
+    border-radius: 12px;
+    text-align: left;
+    color: #94a3b8;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Orbitron', sans-serif;
 }
 .zone-btn:hover {
-    color: #e2e8f0;
-    border-color: #3b82f6;
-    background: #111a36;
+    border-color: #38bdf8;
+    color: #f1f5f9;
 }
 .zone-btn.active {
-    background: linear-gradient(135deg, #1e1b4b 0%, #311042 100%);
-    border-color: #a855f7;
-    color: #f3e8ff;
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.15);
+    background: #ffffff;
+    color: #090b11;
+    border-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
 }
 
-/* Estilización del control deslizante (Slider) */
-.custom-range {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 6px;
-    border-radius: 5px;
-    background: #1e293b;
-    outline: none;
+/* Fondos de Corteza Artificiales mediante CSS Puro de Alta Fidelidad */
+.cortex-centro {
+    background: #27272a;
+    background-image: repeating-linear-gradient(0deg, #18181b, #18181b 4px, #27272a 4px, #27272a 20px);
+    opacity: 0.85;
 }
-.custom-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #06b6d4;
+.cortex-prado {
+    background: #5c4033;
+    background-image: repeating-linear-gradient(90deg, #3d2b1f, #3d2b1f 6px, #5c4033 6px, #5c4033 24px);
+}
+
+/* Subcuadrantes individuales de la rejilla de hilos transparente */
+.grid-cell {
+    border: 0.5px solid rgba(34, 211, 238, 0.25);
+    background-color: rgba(0, 0, 0, 0);
+    transition: all 0.2s ease;
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-    transition: transform 0.1s;
 }
-.custom-range::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
+/* Al pasar el mouse resalta el hilo */
+.grid-cell:hover {
+    background-color: rgba(34, 211, 238, 0.15);
 }
-
-/* Efecto de Nubes de Smog Dinámico */
-#pollution-cloud {
-    background: radial-gradient(circle, rgba(239,68,68,0) 0%, rgba(5,7,15,0) 100%);
+/* Cuadrante marcado que contiene al líquen */
+.grid-cell.contains-lichen {
+    background-color: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.6);
 }
-
-/* Animación de oscilación para que el árbol parezca vivo */
-@keyframes wind {
-    0%, 100% { transform: rotate(0deg) scale(1); }
-    50% { transform: rotate(1deg) scale(1.01); }
-}
-.live-tree {
-    animation: wind 6s ease-in-out infinite;
-    transform-origin: bottom center;
+.grid-cell.contains-lichen-critical {
+    background-color: rgba(239, 68, 68, 0.25);
+    border: 1px solid rgba(239, 68, 68, 0.6);
 }
 
-/* Animaciones para las esporas de líquenes */
-.lichen-spot {
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+/* Manchas orgánicas de líquenes en la corteza */
+.lichen-blob {
+    position: absolute;
+    border-radius: 45%;
+    filter: blur(1px);
+    mix-blend-mode: hard-light;
+    transform: rotate(15deg);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
 }
