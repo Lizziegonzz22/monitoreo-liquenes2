@@ -1,69 +1,344 @@
-/* Estilos del panel y fuentes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    background-image: radial-gradient(#161925 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-color: #05070c;
+    color: #e2e8f0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    background-image: 
+        radial-gradient(rgba(30, 41, 59, 0.5) 1px, transparent 0),
+        radial-gradient(rgba(147, 51, 234, 0.05) 200px, transparent 400px);
+    background-size: 30px 30px, 100% 100%;
 }
 
-/* Botones de Estación */
-.zone-btn {
-    width: 100%;
-    background: #151926;
-    border: 1px solid #23293d;
-    padding: 14px;
-    border-radius: 12px;
-    text-align: left;
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px;
+    gap: 20px;
+}
+
+.main-header {
+    background: linear-gradient(90deg, #0f121d 0%, #090b11 100%);
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    height: 75px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-title h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.header-title p {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.scanner-status-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #06b6d4;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #06b6d4;
+    animation: pulse 2s infinite;
+}
+
+.badge-core {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    background-color: rgba(6, 182, 212, 0.06);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    padding: 6px 16px;
+    border-radius: 8px;
+    color: #06b6d4;
+    letter-spacing: 1px;
+}
+
+.workspace {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    height: calc(100% - 95px);
+}
+
+.panel {
+    background-color: rgba(15, 18, 29, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(30, 41, 59, 0.7);
+    border-radius: 24px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+}
+
+.left-panel, .right-panel {
+    width: 380px;
+    shrink: 0;
+}
+
+.center-panel {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(7, 9, 15, 0.9);
+    border: 1px solid rgba(147, 51, 234, 0.15);
+    box-shadow: inset 0 0 60px rgba(0,0,0,0.9);
+}
+
+.panel-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
     color: #94a3b8;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.zone-btn:hover {
-    border-color: #38bdf8;
-    color: #f1f5f9;
-}
-.zone-btn.active {
-    background: #ffffff;
-    color: #090b11;
-    border-color: #ffffff;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
-/* Fondos de Corteza Artificiales mediante CSS Puro de Alta Fidelidad */
-.cortex-centro {
-    background: #27272a;
-    background-image: repeating-linear-gradient(0deg, #18181b, #18181b 4px, #27272a 4px, #27272a 20px);
-    opacity: 0.85;
-}
-.cortex-prado {
-    background: #5c4033;
-    background-image: repeating-linear-gradient(90deg, #3d2b1f, #3d2b1f 6px, #5c4033 6px, #5c4033 24px);
+.button-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* Subcuadrantes individuales de la rejilla de hilos transparente */
-.grid-cell {
-    border: 0.5px solid rgba(34, 211, 238, 0.25);
-    background-color: rgba(0, 0, 0, 0);
-    transition: all 0.2s ease;
+.station-btn {
+    background-color: #0d1017;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
     cursor: pointer;
-}
-/* Al pasar el mouse resalta el hilo */
-.grid-cell:hover {
-    background-color: rgba(34, 211, 238, 0.15);
-}
-/* Cuadrante marcado que contiene al líquen */
-.grid-cell.contains-lichen {
-    background-color: rgba(16, 185, 129, 0.2);
-    border: 1px solid rgba(16, 185, 129, 0.6);
-}
-.grid-cell.contains-lichen-critical {
-    background-color: rgba(239, 68, 68, 0.25);
-    border: 1px solid rgba(239, 68, 68, 0.6);
+    text-align: left;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    width: 100%;
 }
 
-/* Manchas orgánicas de líquenes en la corteza */
-.lichen-blob {
-    position: absolute;
-    border-radius: 45%;
-    filter: blur(1px);
-    mix-blend-mode: hard-light;
-    transform: rotate(15deg);
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+.station-btn:hover {
+    border-color: #4f46e5;
+    background-color: #121724;
+    transform: translateY(-2px);
 }
+
+.station-btn.active {
+    background: linear-gradient(135deg, #1e1b4b 0%, #110724 100%);
+    border-color: #a855f7;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.2);
+}
+
+.btn-indicator {
+    width: 8px;
+    height: 30px;
+    border-radius: 4px;
+    shrink: 0;
+}
+.code-red { background-color: #ef4444; box-shadow: 0 0 10px #ef4444; }
+.code-green { background-color: #10b981; box-shadow: 0 0 10px #10b981; }
+
+.btn-text strong {
+    display: block;
+    font-size: 14px;
+    color: #fff;
+}
+.btn-text small {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.telemetry-box {
+    background-color: #080a10;
+    border: 1px solid #1e293b;
+    padding: 20px;
+    border-radius: 16px;
+}
+
+.data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.4);
+    font-size: 12px;
+}
+.data-row:last-child { border-bottom: none; }
+
+.label { color: #64748b; font-weight: 500; }
+.value { font-weight: 700; font-family: monospace; }
+.text-red { color: #f87171; }
+.text-green { color: #34d399; }
+.text-cyan { color: #22d3ee; }
+.text-amber { color: #fbbf24; }
+
+/* MICROSCOPIO CENTRAL */
+.microscope-casing {
+    width: 360px;
+    height: 480px;
+    background-color: #111422;
+    border: 6px solid #1e293b;
+    border-radius: 40px;
+    padding: 15px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.6);
+    position: relative;
+}
+
+.lens-rim {
+    width: 100%;
+    height: 100%;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 3px solid #000;
+    box-shadow: 0 0 30px rgba(0,0,0,1);
+}
+
+.lens-viewport {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.texture-centro {
+    background: #27272a;
+    background-image: repeating-linear-gradient(0deg, #141416, #141416 3px, #27272a 3px, #27272a 15px);
+}
+
+.texture-prado {
+    background: #523b2e;
+    background-image: repeating-linear-gradient(90deg, #33241c, #33241c 5px, #523b2e 5px, #523b2e 20px);
+}
+
+.hologram-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    z-index: 20;
+}
+
+.grid-cell {
+    border: 0.5px solid rgba(6, 182, 212, 0.15);
+    transition: all 0.3s;
+}
+
+.grid-cell.glow-red {
+    background-color: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+.grid-cell.glow-green {
+    background-color: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.organic-blob {
+    position: absolute;
+    width: 50px;
+    height: 38px;
+    border-radius: 40%;
+    mix-blend-mode: hard-light;
+    filter: blur(0.5px);
+    z-index: 10;
+    transform: rotate(8deg);
+    transition: all 0.5s ease-in-out;
+}
+
+.laser-scanner {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #a855f7, transparent);
+    box-shadow: 0 0 12px #a855f7;
+    z-index: 30;
+    animation: scan 4s linear infinite;
+}
+
+.viewer-legend {
+    font-size: 11px;
+    font-family: monospace;
+    color: #475569;
+    margin-top: 15px;
+}
+
+.diagnostic-card {
+    background-color: #090c15;
+    border: 1px solid #1e293b;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+.badge-red { background-color: rgba(239,68,68,0.1); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.badge-green { background-color: rgba(16,185,129,0.1); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+
+.mono-label { font-size: 10px; color: #475569; font-family: monospace; }
+.species-title { font-size: 18px; color: #fff; margin-top: 15px; font-weight: 800; }
+.species-desc { font-size: 12px; color: #94a3b8; line-height: 1.6; margin-top: 10px; }
+
+.alert-card {
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+.alert-red { background-color: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.15); color: #fca5a5; }
+.alert-green { background-color: rgba(5, 150, 105, 0.05); border: 1px solid rgba(5, 150, 105, 0.15); color: #a7f3d0; }
+
+.alert-icon { font-size: 22px; shrink: 0; }
+.alert-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.alert-desc { font-size: 11px; margin-top: 4px; opacity: 0.85; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; box-shadow: 0 0 15px #06b6d4; }
+}
+
+@keyframes scan {
+    0% { top: 15px; }
+    50% { top: 460px; }
+    100% { top: 15px; }
+}
+
