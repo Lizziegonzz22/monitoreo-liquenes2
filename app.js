@@ -1,120 +1,173 @@
-// --- CENTRAL DE DATOS EXTRAÍDOS DEL ANTEPROYECTO DEL LICEO ---
-const dataset = {
-    Centro: {
-        tree: "Fresno (Fraxinus)",
-        fi: "12 Subcuadrantes",
-        purity: "CRÍTICA (Efecto Cañón)",
-        purityClass: "text-red",
-        biotype: "Biotipo Crustoso / Tolerante",
-        biotypeClass: "badge-red",
-        name: "Physcia urbana / adscendens",
-        desc: "Talos foliáceos de color gris claro o ceniza. Crecen pegados a la corteza en zonas con alto tráfico vehicular en Zelmar Michelini. Absorben contaminación continua sin morir por inanición.",
-        health: "Alerta Crítica: El estancamiento de gases por la densidad edilicia del Centro eleva riesgos de asma y daños pulmonares severos.",
-        healthClass: "alert-red",
-        healthIcon: "☣",
-        lensTexture: "texture-centro",
-        blobColor: "rgba(148, 163, 184, 0.85)", // Gris ceniza del catálogo
-        cells: [1, 2, 5, 6, 9, 10, 14, 15, 21, 22, 33, 34] // Coordenadas del PDF
-    },
-    Prado: {
-        tree: "Ciprés Pantanoso",
-        fi: "20 Subcuadrantes (Máximo)",
-        purity: "ÓPTIMA (Foco de Control)",
-        purityClass: "text-green",
-        biotype: "Biotipo Fruticuloso / Sensible",
-        biotypeClass: "badge-green",
-        name: "Flavoparmelia / Ramalina celastri",
-        desc: "Foliáceos grandes verde-amarillentos y ramificaciones colgantes tipo cintas. Exigen aire marcadamente limpio, por lo que tapizan por completo los árboles de la Senda Costanera del Prado.",
-        health: "Entorno Seguro: Atmósfera oxigenada gracias a las extensas áreas verdes del Prado, actuando como amortiguadores ambientales eficientes.",
-        healthClass: "alert-green",
+// --- CONFIGURACIÓN DE NIVELES ECOLÓGICOS (DATOS DEL PDF) ---
+const stages = {
+    clean: {
+        traffic: "Zona de Control (Prado)",
+        trafficClass: "text-green",
+        bgClass: "bg-prado-clean",
+        name: "Usnea sp. (Barba de Viejo) / Teloschistes",
+        badge: "Fruticuloso / Muy Sensible",
+        desc: "Exigen aire completamente puro. Sus filamentos naranja y verde brillante demuestran que el nivel de dióxido de azufre es nulo.",
+        healthTitle: "Entorno Seguro (Prado)",
+        healthText: "Las áreas de parques absorben gases pesados. Atmósfera ideal libre de riesgos respiratorios en el Prado.",
+        healthClass: "panel-card alert-system border-green",
         healthIcon: "🌿",
-        lensTexture: "texture-prado",
-        blobColor: "rgba(52, 211, 153, 0.9)", // Verde esmeralda neón del catálogo
-        cells: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] // Tapizado completo
+        lichenColor: "#10b981", // Verde neón
+        // Cuadrantes recomendados donde brotan en la pantalla
+        spots: 
+    },
+    medium: {
+        traffic: "Moderado / Avenidas (Colón)",
+        trafficClass: "text-amber",
+        bgClass: "bg-colon-medium",
+        name: "Flavoparmelia caperata / Ramalina",
+        badge: "Foliáceo / Resistencia Media",
+        desc: "Las especies ramificadas mueren. Sobreviven láminas verde-amarillentas que toleran el impacto intermedio de Av. Garzón.",
+        healthTitle: "Atención Respiratoria (Colón)",
+        healthText: "Nivel transicional. Concentración moderada de partículas en suspensión pero estable.",
+        healthClass: "panel-card alert-system border-amber",
+        healthIcon: "🏡",
+        lichenColor: "#eab308", // Amarillo azufre
+        spots: 
+    },
+    toxic: {
+        traffic: "Efecto Cañón / Saturado (Centro)",
+        trafficClass: "text-red",
+        bgClass: "bg-centro-smog",
+        name: "Physcia urbana / Lepraria incana",
+        badge: "Crustoso / Muy Tolerante",
+        desc: "Toda la diversidad biológica desaparece. Solo quedan costras grises pegadas al tronco que toleran el esmog de Zelmar Michelini.",
+        healthTitle: "Alerta Crítica (Centro)",
+        healthText: "Los edificios retienen los gases de escape. Riesgo muy elevado de asma e infecciones pulmonares infantiles.",
+        healthClass: "panel-card alert-system border-red",
+        healthIcon: "☣",
+        lichenColor: "#94a3b8", // Gris ceniza marchito
+        spots: 
     }
 };
 
-const gridElement = document.getElementById('hologram-grid');
-const blobsContainer = document.getElementById('lichen-blobs-layer');
-const lensElement = document.getElementById('microscope-lens');
+const slider = document.getElementById('smog-slider');
+const grid = document.getElementById('interactive-grid');
+const lichenGarden = document.getElementById('lichen-garden');
 
-// Generar celdas transparentes fijas
-function buildGridStructure() {
-    gridElement.innerHTML = "";
+let countedSquares = new Set();
+let currentActiveSpots = [];
+
+// --- CREAR MATRIZ INTERACTIVA DE 40 CASILLEROS ---
+function initInteractiveMatrix() {
+    grid.innerHTML = "";
+    countedSquares.clear();
+    document.getElementById('lbl-counted').innerText = "0";
+    document.getElementById('lbl-ipa').innerText = "0 / 20";
+    document.getElementById('lbl-ipa').className = "text-green font-black text-lg";
+
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
-        cell.className = "grid-cell";
-        gridElement.appendChild(cell);
+        cell.className = "matrix-cell";
+        
+        // Evento interactivo de conteo al hacer clic en los hilos de luz
+        cell.addEventListener('click', () => {
+            if (currentActiveSpots.includes(i)) {
+                if (countedSquares.has(i)) {
+                    countedSquares.delete(i);
+                    cell.classList.remove('counted-active');
+                } else {
+                    countedSquares.add(i);
+                    cell.classList.add('counted-active');
+                }
+                
+                // Calcular IPA dinámico en base al conteo del usuario
+                const score = countedSquares.size;
+                document.getElementById('lbl-counted').innerText = score;
+                document.getElementById('lbl-ipa').innerText = `${score} / 20`;
+                
+                // Cambiar color del marcador digital inteligente
+                const ipaLabel = document.getElementById('lbl-ipa');
+                if(score <= 6) ipaLabel.className = "text-red font-black text-lg animate-pulse";
+                else if(score <= 12) ipaLabel.className = "text-amber font-black text-lg";
+                else ipaLabel.className = "text-green font-black text-lg";
+            }
+        });
+        grid.appendChild(cell);
     }
 }
 
-// Cambiar de estación analizada
-function switchLaboratoryMode(zone) {
-    // Alternar clases activas de los botones de la interfaz
-    document.getElementById('btn-centro').classList.remove('active');
-    document.getElementById('btn-prado').classList.remove('active');
+// --- ACTUALIZACIÓN INTERACTIVA SEGÚN TU INYECCIÓN DE CONTAMINACIÓN ---
+function runAtmosphereSimulation(pollutionLevel) {
+    let mode = "clean";
+    if (pollutionLevel >= 35 && pollutionLevel < 75) mode = "medium";
+    if (pollutionLevel >= 75) mode = "toxic";
+
+    const config = stages[mode];
+    currentActiveSpots = config.spots;
+
+    // 1. Forzar textos y telemetrías
+    const txtTraffic = document.getElementById('txt-traffic');
+    txtTraffic.innerText = config.traffic;
+    txtTraffic.className = `metric-val ${config.trafficClass}`;
+
+    document.getElementById('specie-name').innerText = config.name;
+    document.getElementById('specie-type').innerText = config.badge;
+    document.getElementById('specie-desc').innerText = config.desc;
     
-    if (zone === 'Centro') {
-        document.getElementById('btn-centro').classList.add('active');
-    } else {
-        document.getElementById('btn-prado').classList.add('active');
-    }
+    const speciesBox = document.getElementById('lichen-species-box');
+    speciesBox.className = `species-status-card state-${mode === 'clean' ? 'clean' : (mode === 'medium' ? 'medium' : 'toxic')}`;
 
-    const data = dataset[zone];
+    document.getElementById('health-title').innerText = config.healthTitle;
+    document.getElementById('health-text').innerText = config.healthText;
+    document.getElementById('health-icon').innerText = config.healthIcon;
+    document.getElementById('health-alert-box').className = config.healthClass;
 
-    // Cargar textos en los paneles correspondientes
-    document.getElementById('data-tree').innerText = data.tree;
-    document.getElementById('data-fi').innerText = data.fi;
-    
-    const purity = document.getElementById('data-purity');
-    purity.innerText = data.purity;
-    purity.className = `value ${data.purityClass}`;
+    // 2. Modificar el domo ambiental (Gradientes)
+    document.getElementById('atmosphere-glow').className = `environment-container ${config.bgClass}`;
 
-    document.getElementById('data-name').innerText = data.name;
-    document.getElementById('data-desc').innerText = data.desc;
-    document.getElementById('data-health').innerText = data.health;
-
-    const biotype = document.getElementById('data-biotype');
-    biotype.innerText = data.biotype;
-    biotype.className = `badge-tag ${data.biotypeClass}`;
-
-    const healthCard = document.getElementById('health-card');
-    healthCard.className = `panel-section alert-card ${data.healthClass}`;
-    healthCard.querySelector('.alert-icon').innerText = data.healthIcon;
-
-    // Cambiar la textura de fondo de la corteza
-    lensElement.className = `lens-viewport ${data.lensTexture}`;
-
-    // Limpiar visor y reconstruir rejilla
-    blobsContainer.innerHTML = "";
-    buildGridStructure();
-
-    // Dibujar líquenes reales y encender hilos de luz de la rejilla
-    data.cells.forEach(index => {
-        const cell = gridElement.children[index];
-        if (!cell) return;
-
-        cell.classList.add(zone === 'Centro' ? 'glow-red' : 'glow-green');
-
+    // 3. Brotación orgánica y fluida de líquenes en la corteza
+    lichenGarden.innerHTML = "";
+    config.spots.forEach(index => {
         const blob = document.createElement('div');
-        blob.className = "organic-blob";
-        blob.style.backgroundColor = data.blobColor;
-        blob.style.boxShadow = `0 0 15px ${data.blobColor}`;
+        blob.className = "lichen-element";
         
-        // Distribución matemática en base al cuadrante real
+        // Traducir el índice de la matriz en coordenadas X/Y reales sobre el tronco
         const row = Math.floor(index / 4);
         const col = index % 4;
-        blob.style.top = `${row * 10 + 1}%`;
-        blob.style.left = `${col * 25 + 2}%`;
+        
+        blob.style.width = mode === 'toxic' ? "25px" : "40px";
+        blob.style.height = mode === 'toxic' ? "20px" : "32px";
+        blob.style.top = `${row * 10 + 2}%`;
+        blob.style.left = `${col * 22 + 10}%`;
+        blob.style.backgroundColor = config.lichenColor;
+        blob.style.boxShadow = `0 0 15px ${config.lichenColor}`;
 
-        blobsContainer.appendChild(blob);
+        lichenGarden.appendChild(blob);
+        
+        // Retraso milimétrico para activar el efecto de crecimiento orgánico fluido
+        setTimeout(() => blob.classList.add('spawned'), 50);
     });
+
+    // Limpiar cuadrantes marcados si el líguen desapareció por el esmog
+    Array.from(grid.children).forEach((cell, i) => {
+        if (!config.spots.includes(i)) {
+            cell.classList.remove('counted-active');
+            countedSquares.delete(i);
+        }
+    });
+    document.getElementById('lbl-counted').innerText = countedSquares.size;
 }
 
-// Configurar los escuchadores de eventos al cargar el script
-document.getElementById('btn-centro').addEventListener('click', () => switchLaboratoryMode('Centro'));
-document.getElementById('btn-prado').addEventListener('click', () => switchLaboratoryMode('Prado'));
+// --- CONTROLES DE LA REJILLA TRANSPARENTE ---
+const btnGrid = document.getElementById('btn-toggle-grid');
+let gridVisible = true;
+btnGrid.addEventListener('click', () => {
+    gridVisible = !gridVisible;
+    grid.style.opacity = gridVisible ? "1" : "0";
+    btnGrid.innerText = gridVisible ? "Ocultar Rejilla" : "Mostrar Rejilla";
+});
 
-// Arrancar por defecto en el estado crítico del Centro
-switchLaboratoryMode('Centro');
+// Oír movimientos del inyector manual
+slider.addEventListener('input', (e) => {
+    runAtmosphereSimulation(parseInt(e.target.value));
+});
+
+// Inicializar mesa de simulación limpia
+initInteractiveMatrix();
+runAtmosphereSimulation(0);
 
