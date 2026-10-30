@@ -1,120 +1,120 @@
-// --- DATOS VERÍDICOS EXTRAÍDOS DE LAS PÁGINAS DE TU PDF ---
-const realPDFData = {
+// --- CENTRAL DE DATOS EXTRAÍDOS DEL ANTEPROYECTO DEL LICEO ---
+const dataset = {
     Centro: {
-        name: "Physcia urbana / Physcia adscendens",
-        biotype: "Líquenes Tolerantes (Foco Centro)",
-        desc: "Talos foliáceos de color gris claro o ceniza. Crecen pegados a la corteza en zonas con alto tráfico vehicular y depósitos de nitrógeno de los escapes en Zelmar Michelini.",
-        fi: 12, // Tomamos de ejemplo la estación de Zelmar Michelini con fi:12
         tree: "Fresno (Fraxinus)",
-        cortexClass: "cortex-centro",
-        blobColor: "#cbd5e1", // Gris ceniza claro real del catálogo
-        // Cuadrantes fijos donde aparece el liquen en la rejilla de 40 celdas
-        occupiedCells:,
-        isCritical: true
+        fi: "12 Subcuadrantes",
+        purity: "CRÍTICA (Efecto Cañón)",
+        purityClass: "text-red",
+        biotype: "Biotipo Crustoso / Tolerante",
+        biotypeClass: "badge-red",
+        name: "Physcia urbana / adscendens",
+        desc: "Talos foliáceos de color gris claro o ceniza. Crecen pegados a la corteza en zonas con alto tráfico vehicular en Zelmar Michelini. Absorben contaminación continua sin morir por inanición.",
+        health: "Alerta Crítica: El estancamiento de gases por la densidad edilicia del Centro eleva riesgos de asma y daños pulmonares severos.",
+        healthClass: "alert-red",
+        healthIcon: "☣",
+        lensTexture: "texture-centro",
+        blobColor: "rgba(148, 163, 184, 0.85)", // Gris ceniza del catálogo
+        cells: [1, 2, 5, 6, 9, 10, 14, 15, 21, 22, 33, 34] // Coordenadas del PDF
     },
     Prado: {
-        name: "Flavoparmelia caperata / Ramalina celastri",
-        biotype: "Líquenes Intermedios/Sensibles (Foco Prado)",
-        desc: "Foliáceo grande de color verde-amarillento y fruticulosos tipo cintas colgantes. Abundantes en áreas limpias como la Senda Costanera del Prado.",
-        fi: 20, // Estación real con fi:20 del ciprés pantanoso del PDF
         tree: "Ciprés Pantanoso",
-        cortexClass: "cortex-prado",
-        blobColor: "#a7f3d0", // Verde-amarillento brillante del catálogo
-        occupiedCells:,
-        isCritical: false
+        fi: "20 Subcuadrantes (Máximo)",
+        purity: "ÓPTIMA (Foco de Control)",
+        purityClass: "text-green",
+        biotype: "Biotipo Fruticuloso / Sensible",
+        biotypeClass: "badge-green",
+        name: "Flavoparmelia / Ramalina celastri",
+        desc: "Foliáceos grandes verde-amarillentos y ramificaciones colgantes tipo cintas. Exigen aire marcadamente limpio, por lo que tapizan por completo los árboles de la Senda Costanera del Prado.",
+        health: "Entorno Seguro: Atmósfera oxigenada gracias a las extensas áreas verdes del Prado, actuando como amortiguadores ambientales eficientes.",
+        healthClass: "alert-green",
+        healthIcon: "🌿",
+        lensTexture: "texture-prado",
+        blobColor: "rgba(52, 211, 153, 0.9)", // Verde esmeralda neón del catálogo
+        cells: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] // Tapizado completo
     }
 };
 
-const gridContainer = document.getElementById('sampling-grid');
-const coloniesLayer = document.getElementById('lichen-colonies-layer');
-const barkBg = document.getElementById('tree-bark-bg');
+const gridElement = document.getElementById('hologram-grid');
+const blobsContainer = document.getElementById('lichen-blobs-layer');
+const lensElement = document.getElementById('microscope-lens');
 
-// --- DIBUJAR LA REJILLA DE 40 CUADRANTES ---
-function buildGrid() {
-    gridContainer.innerHTML = "";
+// Generar celdas transparentes fijas
+function buildGridStructure() {
+    gridElement.innerHTML = "";
     for (let i = 0; i < 40; i++) {
         const cell = document.createElement('div');
         cell.className = "grid-cell";
-        cell.setAttribute('data-index', i);
-        gridContainer.appendChild(cell);
+        gridElement.appendChild(cell);
     }
 }
 
-// --- RENDERIZAR LAS COLONIAS DE LÍQUENES SOBRE EL TRONCO ---
-function renderLichenBlobs(cells, color) {
-    coloniesLayer.innerHTML = ""; // Limpiar tronco
+// Cambiar de estación analizada
+function switchLaboratoryMode(zone) {
+    // Alternar clases activas de los botones de la interfaz
+    document.getElementById('btn-centro').classList.remove('active');
+    document.getElementById('btn-prado').classList.remove('active');
     
-    cells.forEach(cellIndex => {
-        // Encontrar la posición física aproximada de la celda para dibujar el líquen abajo
-        const cell = gridContainer.children[cellIndex];
+    if (zone === 'Centro') {
+        document.getElementById('btn-centro').classList.add('active');
+    } else {
+        document.getElementById('btn-prado').classList.add('active');
+    }
+
+    const data = dataset[zone];
+
+    // Cargar textos en los paneles correspondientes
+    document.getElementById('data-tree').innerText = data.tree;
+    document.getElementById('data-fi').innerText = data.fi;
+    
+    const purity = document.getElementById('data-purity');
+    purity.innerText = data.purity;
+    purity.className = `value ${data.purityClass}`;
+
+    document.getElementById('data-name').innerText = data.name;
+    document.getElementById('data-desc').innerText = data.desc;
+    document.getElementById('data-health').innerText = data.health;
+
+    const biotype = document.getElementById('data-biotype');
+    biotype.innerText = data.biotype;
+    biotype.className = `badge-tag ${data.biotypeClass}`;
+
+    const healthCard = document.getElementById('health-card');
+    healthCard.className = `panel-section alert-card ${data.healthClass}`;
+    healthCard.querySelector('.alert-icon').innerText = data.healthIcon;
+
+    // Cambiar la textura de fondo de la corteza
+    lensElement.className = `lens-viewport ${data.lensTexture}`;
+
+    // Limpiar visor y reconstruir rejilla
+    blobsContainer.innerHTML = "";
+    buildGridStructure();
+
+    // Dibujar líquenes reales y encender hilos de luz de la rejilla
+    data.cells.forEach(index => {
+        const cell = gridElement.children[index];
         if (!cell) return;
-        
+
+        cell.classList.add(zone === 'Centro' ? 'glow-red' : 'glow-green');
+
         const blob = document.createElement('div');
-        blob.className = "lichen-blob";
+        blob.className = "organic-blob";
+        blob.style.backgroundColor = data.blobColor;
+        blob.style.boxShadow = `0 0 15px ${data.blobColor}`;
         
-        // Ajustar el tamaño para que desborde de forma realista sobre la corteza
-        blob.style.width = "45px";
-        blob.style.height = "35px";
-        blob.style.backgroundColor = color;
-        
-        // Posicionar relativamente respecto al cuadrante
-        const row = Math.floor(cellIndex / 4);
-        const col = cellIndex % 4;
-        
-        blob.style.top = `${row * 10 + 2}%`;
+        // Distribución matemática en base al cuadrante real
+        const row = Math.floor(index / 4);
+        const col = index % 4;
+        blob.style.top = `${row * 10 + 1}%`;
         blob.style.left = `${col * 25 + 2}%`;
-        
-        coloniesLayer.appendChild(blob);
+
+        blobsContainer.appendChild(blob);
     });
 }
 
-// --- ACTUALIZAR LA SIMULACIÓN CON LOS DATOS REALES ---
-function updateGridInspection(zone) {
-    const data = realPDFData[zone];
+// Configurar los escuchadores de eventos al cargar el script
+document.getElementById('btn-centro').addEventListener('click', () => switchLaboratoryMode('Centro'));
+document.getElementById('btn-prado').addEventListener('click', () => switchLaboratoryMode('Prado'));
 
-    // 1. Cargar textos técnicos de la investigación
-    document.getElementById('comp-name').innerText = data.name;
-    document.getElementById('comp-biotype').innerText = data.biotype;
-    document.getElementById('comp-desc').innerText = data.desc;
-    document.getElementById('comp-fi').innerText = `${data.fi} subcuadrantes`;
-    document.getElementById('comp-tree').innerText = data.tree;
-
-    // Ajustar color del biotipo
-    const biotypeLabel = document.getElementById('comp-biotype');
-    if(data.isCritical) biotypeLabel.className = "text-[10px] font-mono bg-red-500/10 text-red-400 px-2 py-1 rounded-md uppercase tracking-wider";
-    else biotypeLabel.className = "text-[10px] font-mono bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded-md uppercase tracking-wider";
-
-    // 2. Cambiar la textura e iluminación de la corteza
-    barkBg.className = `absolute inset-0 transition-all duration-700 ${data.cortexClass}`;
-
-    // 3. Pintar líquenes biológicos en el fondo
-    renderLichenBlobs(data.occupiedCells, data.blobColor);
-
-    // 4. Resetear e iluminar los hilos de la rejilla según los datos del PDF
-    buildGrid();
-    
-    // Iluminar automáticamente los cuadrantes donde tu investigación contó líquenes
-    data.occupiedCells.forEach(index => {
-        const cell = gridContainer.children[index];
-        if(cell) {
-            cell.classList.add(data.isCritical ? 'contains-lichen-critical' : 'contains-lichen');
-        }
-    });
-
-    // Actualizar el marcador numérico inferior
-    document.getElementById('active-squares').innerText = data.occupiedCells.length;
-}
-
-// --- ESCUCHADORES DE CLIC EN LOS BOTONES DE LABORATORIO ---
-document.querySelectorAll('.zone-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        document.querySelectorAll('.zone-btn').forEach(b => b.classList.remove('active'));
-        const activeBtn = e.currentTarget;
-        activeBtn.classList.add('active');
-        updateGridInspection(activeBtn.getAttribute('data-zone'));
-    });
-});
-
-// Inicializar la cuadrícula directo con los datos críticos del Centro de tu PDF
-updateGridInspection("Centro");
+// Arrancar por defecto en el estado crítico del Centro
+switchLaboratoryMode('Centro');
 
