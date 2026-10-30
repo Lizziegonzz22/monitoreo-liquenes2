@@ -3,106 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoreo Ambiental - Líquenes Montevideo</title>
-    
-    <!-- Leaflet CSS para el Mapa -->
-    <link rel="stylesheet" href="https://unpkg.com" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    
-    <!-- Google Fonts & Tailwind para Diseño Moderno -->
+    <title>Dashboard Ecológico - Líquenes MVD</title>
+    <!-- Tailwind CSS para diseño rápido y moderno -->
     <script src="https://tailwindcss.com"></script>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Archivo CSS Personalizado -->
+    <link href="https://googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 overflow-hidden h-screen flex flex-col">
+<body class="bg-[#0f172a] text-slate-100 overflow-hidden h-screen flex flex-col">
 
-    <!-- Navbar Principal -->
-    <header class="bg-emerald-900 text-white h-20 px-6 flex items-center justify-between shadow-md shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="bg-emerald-700 p-2 rounded-lg text-emerald-200">🌱</div>
+    <!-- Encabezado Científico -->
+    <header class="bg-[#1e293b]/80 backdrop-blur-md h-20 px-6 flex items-center justify-between border-b border-slate-800 shrink-0">
+        <div class="flex items-center gap-4">
+            <div class="bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20 text-emerald-400 text-xl">
+                🧬
+            </div>
             <div>
-                <h1 class="text-xl font-bold tracking-tight">BioIndicadores Montevideo</h1>
-                <p class="text-xs text-emerald-300 font-medium">Liceo N°63 "Idea Vilariño" • Proyecto de Calidad del Aire</p>
+                <h1 class="text-lg font-bold tracking-tight text-white">MONITOREO ATMOSFÉRICO S.V.G.</h1>
+                <p class="text-xs text-slate-400">Liceo N°63 "Idea Vilariño" • Líquenes como Bioindicadores</p>
             </div>
         </div>
-        <div class="hidden md:flex gap-6 text-sm font-medium">
-            <span class="bg-emerald-800/50 px-3 py-1.5 rounded-full text-emerald-200 border border-emerald-700/50">Método IPA (LeBlanc & De Sloover)</span>
+        <div class="bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-lg text-xs font-mono text-emerald-400">
+            NÚCLEO MOTOR INTERNO • 100% LOCAL
         </div>
     </header>
 
-    <!-- Contenedor Principal (Mapa + Panel Lateral) -->
+    <!-- Espacio de Trabajo -->
     <main class="flex-1 flex flex-col md:flex-row relative">
         
-        <!-- Panel Lateral Izquierdo -->
-        <section class="w-full md:w-[420px] bg-white border-r border-slate-200 shadow-xl flex flex-col z-10 h-2/5 md:h-full">
+        <!-- Panel de Control Izquierdo -->
+        <section class="w-full md:w-[400px] bg-[#141b2e] border-r border-slate-800 shadow-2xl flex flex-col z-10 h-2/5 md:h-full">
             
-            <!-- Selector de Zona e Información Dinámica -->
-            <div class="p-5 border-b border-slate-100 bg-slate-50/50 shrink-0">
-                <h2 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">Panel de Control Ambiental</h2>
-                <p class="text-xs text-slate-400 mb-4">Haz clic sobre cualquier marcador en el mapa para auditar el espécimen o añade un nuevo punto interactivo.</p>
+            <div class="p-5 border-b border-slate-800 bg-[#0f172a]/50 shrink-0">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Mapeador de Estaciones</h2>
+                <p class="text-[11px] text-slate-500 mb-4">Haz clic en el vector de Montevideo para añadir nuevos árboles o selecciona un nodo existente.</p>
                 
-                <!-- Botón para modo agregar -->
-                <button id="btn-add-mode" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl text-sm font-medium transition-all shadow-sm shadow-emerald-600/20 flex items-center justify-center gap-2">
-                    <span id="add-icon">📍</span> <span id="add-text">Registrar Árbol en el Mapa</span>
+                <button id="btn-add-mode" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 px-4 rounded-xl text-xs font-semibold tracking-wider uppercase transition-all shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-2">
+                    <span id="add-icon">⚡</span> <span id="add-text">Activar Sensor de Registro</span>
                 </button>
             </div>
 
-            <!-- Contenedor de Detalles (Cambia dinámicamente) -->
+            <!-- Información Cambiante -->
             <div class="flex-1 overflow-y-auto p-5 custom-scrollbar" id="detail-panel">
-                <div class="text-center py-12 text-slate-400" id="default-message">
-                    <div class="text-4xl mb-3">🌳</div>
-                    <p class="text-sm font-medium">Ningún árbol seleccionado</p>
-                    <p class="text-xs max-w-[240px] mx-auto mt-1">Toca un marcador en el mapa de Montevideo para ver su ficha técnica, especie e índice <span class="italic">fi</span> registrado.</p>
+                <div class="text-center py-16 text-slate-500" id="default-message">
+                    <div class="text-4xl mb-4 text-emerald-500/30 animate-pulse">🛰️</div>
+                    <p class="text-xs font-semibold uppercase tracking-wider">Terminal en Espera</p>
+                    <p class="text-[11px] max-w-[250px] mx-auto mt-2 text-slate-500">Selecciona cualquier nodo del mapa vectorial para desplegar la telemetría e índices de pureza atmosférica (fi).</p>
                 </div>
 
-                <!-- Plantilla de Ficha Técnica (Oculta por defecto) -->
-                <div id="tree-details" class="hidden space-y-5">
-                    <div class="flex items-start justify-between border-b border-slate-100 pb-4">
+                <!-- Tarjeta de Datos Técnicos -->
+                <div id="tree-details" class="hidden space-y-4">
+                    <div class="flex items-start justify-between border-b border-slate-800 pb-4">
                         <div>
-                            <span id="badge-zona" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">Zona</span>
-                            <h3 id="detail-id" class="text-xl font-bold text-slate-800 mt-2">ID_ARBOL</h3>
-                            <p id="detail-lugar" class="text-xs text-slate-500 font-medium">Ubicación exacta</p>
+                            <span id="badge-zona" class="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md">ZONA</span>
+                            <h3 id="detail-id" class="text-2xl font-bold text-white mt-2 font-mono tracking-tight">ID_NODO</h3>
+                            <p id="detail-lugar" class="text-xs text-slate-400 mt-1">Ubicación física</p>
                         </div>
-                        <div class="text-right">
-                            <span class="text-[10px] font-semibold text-slate-400 block uppercase">Frecuencia (fi)</span>
-                            <span id="detail-fi" class="text-3xl font-extrabold text-emerald-600">00</span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3 text-xs">
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="text-slate-400 font-medium block mb-1">Especie Botánica</span>
-                            <span id="detail-especie" class="font-bold text-slate-700 text-sm">Cargando...</span>
-                        </div>
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <span class="text-slate-400 font-medium block mb-1">Estado de Corteza</span>
-                            <span class="font-semibold text-slate-700 text-sm flex items-center gap-1">🟢 Conquistada</span>
+                        <div class="text-right bg-slate-900/60 p-3 rounded-xl border border-slate-800/80 min-w-[75px]">
+                            <span class="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Métrica fi</span>
+                            <span id="detail-fi" class="text-3xl font-black font-mono">00</span>
                         </div>
                     </div>
 
-                    <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100/50">
-                        <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1">📋 Parámetros de Muestreo</h4>
-                        <ul class="text-xs text-emerald-950 space-y-2">
-                            <li>• <strong>Rejilla:</strong> Colocada a altura estándar (0.7m a 1.2m).</li>
-                            <li>• <strong>Inclinación:</strong> Tronco vertical sin desviación significativa.</li>
-                            <li>• <strong>Estado:</strong> Sin pintura, cartelería ni perturbaciones antrópicas.</li>
-                        </ul>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/50">
+                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider mb-1">Especie Arbórea</span>
+                            <span id="detail-especie" class="font-bold text-slate-200 text-xs">Desconocido</span>
+                        </div>
+                        <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/50">
+                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider mb-1">Sustrato</span>
+                            <span class="font-bold text-emerald-400 text-xs flex items-center gap-1"> Rugoso</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-400 space-y-2">
+                        <div class="text-emerald-400 font-bold border-b border-slate-800 pb-1 uppercase text-[10px]">Verificaciones obligatorias:</div>
+                        <p>✔ Altura fija: 0.70m - 1.20m</p>
+                        <p>✔ Tronco: Vertical sin inclinación</p>
+                        <p>✔ Entorno: Libre de cartelería/pintura</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contenedor del Mapa Leaflet -->
-        <section class="flex-1 h-3/5 md:h-full relative shadow-inner" id="map"></section>
+        <!-- Lienzo de Mapa Vectorial SVG Autónomo -->
+        <section class="flex-1 h-3/5 md:h-full relative bg-[#0b0f19] flex items-center justify-center p-4">
+            <div id="canvas-container" class="w-full h-full relative flex items-center justify-center">
+                <!-- El plano SVG se auto-inyecta aquí de manera nativa -->
+            </div>
+            
+            <!-- Leyenda de colores del mapa -->
+            <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 p-3 rounded-xl flex flex-col gap-2 text-[10px] font-mono backdrop-blur-sm z-20">
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444]"></span> Calidad Crítica (fi 0-6)</div>
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span> Calidad Moderada (fi 7-12)</div>
+                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></span> Calidad Óptima (fi 13-20)</div>
+            </div>
+        </section>
     </main>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
-    <!-- Archivo de Lógica JavaScript -->
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
 </body>
 </html>
