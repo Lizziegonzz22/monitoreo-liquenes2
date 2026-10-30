@@ -3,101 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Ecológico - Líquenes MVD</title>
-    <!-- Tailwind CSS para diseño rápido y moderno -->
+    <title>Ecolab MVD - Panel de Control de Bioindicadores</title>
+    <!-- Tailwind CSS para el diseño base -->
     <script src="https://tailwindcss.com"></script>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#0f172a] text-slate-100 overflow-hidden h-screen flex flex-col">
+<body class="bg-[#0b0f19] text-slate-200 overflow-hidden h-screen flex flex-col antialiased">
 
-    <!-- Encabezado Científico -->
-    <header class="bg-[#1e293b]/80 backdrop-blur-md h-20 px-6 flex items-center justify-between border-b border-slate-800 shrink-0">
+    <!-- Header Futurista -->
+    <header class="bg-[#111827]/80 backdrop-blur-md h-20 px-8 flex items-center justify-between border-b border-slate-800/60 shrink-0">
         <div class="flex items-center gap-4">
-            <div class="bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20 text-emerald-400 text-xl">
-                🧬
+            <div class="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white font-bold text-lg shadow-lg shadow-emerald-500/20">
+                M
+                <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
             </div>
             <div>
-                <h1 class="text-lg font-bold tracking-tight text-white">MONITOREO ATMOSFÉRICO S.V.G.</h1>
-                <p class="text-xs text-slate-400">Liceo N°63 "Idea Vilariño" • Líquenes como Bioindicadores</p>
+                <h1 class="text-sm font-extrabold tracking-wider text-white uppercase font-mono">ECO-LAB MONTEVIDEO</h1>
+                <p class="text-xs text-slate-400">Liceo N°63 "Idea Vilariño" • Red de Líquenes Corticícolas</p>
             </div>
         </div>
-        <div class="bg-slate-900 border border-slate-800 px-4 py-1.5 rounded-lg text-xs font-mono text-emerald-400">
-            NÚCLEO MOTOR INTERNO • 100% LOCAL
+        
+        <!-- Contador de Estadísticas Rápido -->
+        <div class="flex gap-4 text-xs font-mono">
+            <div class="bg-slate-900/80 border border-slate-800 px-4 py-2 rounded-xl flex items-center gap-2">
+                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                <span class="text-slate-400">Estaciones:</span>
+                <span id="stats-count" class="font-bold text-white text-sm">14</span>
+            </div>
         </div>
     </header>
 
-    <!-- Espacio de Trabajo -->
-    <main class="flex-1 flex flex-col md:flex-row relative">
+    <!-- Área de Trabajo de Pantalla Completa -->
+    <main class="flex-1 flex flex-col md:flex-row relative overflow-hidden">
         
-        <!-- Panel de Control Izquierdo -->
-        <section class="w-full md:w-[400px] bg-[#141b2e] border-r border-slate-800 shadow-2xl flex flex-col z-10 h-2/5 md:h-full">
+        <!-- Panel Lateral Izquierdo: Ficha Técnica -->
+        <section class="w-full md:w-[440px] bg-[#111625] border-r border-slate-800/80 shadow-2xl flex flex-col z-10 h-2/5 md:h-full relative">
             
-            <div class="p-5 border-b border-slate-800 bg-[#0f172a]/50 shrink-0">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Mapeador de Estaciones</h2>
-                <p class="text-[11px] text-slate-500 mb-4">Haz clic en el vector de Montevideo para añadir nuevos árboles o selecciona un nodo existente.</p>
+            <div class="p-6 border-b border-slate-800/60 bg-[#0d111c]">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 font-mono">Panel Operativo</h2>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">Mapea la pureza atmosférica urbana. Selecciona un punto o agrega uno nuevo.</p>
                 
-                <button id="btn-add-mode" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 px-4 rounded-xl text-xs font-semibold tracking-wider uppercase transition-all shadow-lg shadow-emerald-900/30 flex items-center justify-center gap-2">
-                    <span id="add-icon">⚡</span> <span id="add-text">Activar Sensor de Registro</span>
+                <button id="btn-add-mode" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white py-3 px-4 rounded-xl text-xs font-bold tracking-wider uppercase transition-all shadow-lg shadow-emerald-500/10 flex items-center justify-center gap-2 border border-emerald-400/20 active:scale-[0.98]">
+                    <span id="add-icon" class="text-sm">📍</span> <span id="add-text">Registrar Nueva Estación</span>
                 </button>
             </div>
 
-            <!-- Información Cambiante -->
-            <div class="flex-1 overflow-y-auto p-5 custom-scrollbar" id="detail-panel">
-                <div class="text-center py-16 text-slate-500" id="default-message">
-                    <div class="text-4xl mb-4 text-emerald-500/30 animate-pulse">🛰️</div>
-                    <p class="text-xs font-semibold uppercase tracking-wider">Terminal en Espera</p>
-                    <p class="text-[11px] max-w-[250px] mx-auto mt-2 text-slate-500">Selecciona cualquier nodo del mapa vectorial para desplegar la telemetría e índices de pureza atmosférica (fi).</p>
+            <!-- Información Cambiante Dinámica -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar" id="detail-panel">
+                <div class="text-center py-20" id="default-message">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 text-slate-600 text-3xl mb-4 animate-bounce">
+                        🛰️
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Esperando Telemetría</p>
+                    <p class="text-xs max-w-[260px] mx-auto mt-2 text-slate-500 leading-relaxed">Haz clic sobre un nodo en el mapa interactivo para desplegar su ficha de recolección biológica.</p>
                 </div>
 
-                <!-- Tarjeta de Datos Técnicos -->
-                <div id="tree-details" class="hidden space-y-4">
-                    <div class="flex items-start justify-between border-b border-slate-800 pb-4">
+                <!-- Ficha del Árbol Seleccionado -->
+                <div id="tree-details" class="hidden space-y-6 animate-fadeIn">
+                    <div class="flex items-start justify-between border-b border-slate-800/60 pb-5">
                         <div>
-                            <span id="badge-zona" class="text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-md">ZONA</span>
-                            <h3 id="detail-id" class="text-2xl font-bold text-white mt-2 font-mono tracking-tight">ID_NODO</h3>
-                            <p id="detail-lugar" class="text-xs text-slate-400 mt-1">Ubicación física</p>
+                            <span id="badge-zona" class="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-lg border font-mono">ZONA</span>
+                            <h3 id="detail-id" class="text-3xl font-extrabold text-white mt-3 font-mono tracking-tight">ID-00</h3>
+                            <p id="detail-lugar" class="text-xs text-slate-400 mt-1.5 flex items-center gap-1">📍 Ubicación</p>
                         </div>
-                        <div class="text-right bg-slate-900/60 p-3 rounded-xl border border-slate-800/80 min-w-[75px]">
-                            <span class="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Métrica fi</span>
-                            <span id="detail-fi" class="text-3xl font-black font-mono">00</span>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/50">
-                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider mb-1">Especie Arbórea</span>
-                            <span id="detail-especie" class="font-bold text-slate-200 text-xs">Desconocido</span>
-                        </div>
-                        <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/50">
-                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider mb-1">Sustrato</span>
-                            <span class="font-bold text-emerald-400 text-xs flex items-center gap-1"> Rugoso</span>
+                        <div class="text-center bg-[#0d111c] border border-slate-800 p-4 rounded-2xl min-w-[90px] shadow-inner">
+                            <span class="text-[10px] font-bold text-slate-500 block uppercase tracking-wider font-mono mb-1">Métrica fi</span>
+                            <span id="detail-fi" class="text-4xl font-black font-mono">00</span>
                         </div>
                     </div>
 
-                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-400 space-y-2">
-                        <div class="text-emerald-400 font-bold border-b border-slate-800 pb-1 uppercase text-[10px]">Verificaciones obligatorias:</div>
-                        <p>✔ Altura fija: 0.70m - 1.20m</p>
-                        <p>✔ Tronco: Vertical sin inclinación</p>
-                        <p>✔ Entorno: Libre de cartelería/pintura</p>
+                    <!-- Datos Técnicos -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-[#0d111c] p-4 rounded-2xl border border-slate-800/40">
+                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider font-mono mb-1">Especie Botánica</span>
+                            <span id="detail-especie" class="font-extrabold text-white text-sm">Plátano</span>
+                        </div>
+                        <div class="bg-[#0d111c] p-4 rounded-2xl border border-slate-800/40">
+                            <span class="text-slate-500 text-[10px] font-bold block uppercase tracking-wider font-mono mb-1">Corteza</span>
+                            <span class="font-extrabold text-teal-400 text-sm flex items-center gap-1">🌿 Rugosa/Madura</span>
+                        </div>
+                    </div>
+
+                    <!-- Verificación de Protocolo Liceo 63 -->
+                    <div class="bg-slate-900/60 p-4 rounded-2xl border border-slate-800/80 space-y-3">
+                        <div class="text-slate-400 font-bold uppercase tracking-wider text-[10px] font-mono border-b border-slate-800 pb-2 flex items-center gap-1.5">
+                            <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Protocolo de Muestreo Validado
+                        </div>
+                        <div class="grid grid-cols-1 gap-2 text-xs text-slate-400 font-mono">
+                            <div class="flex items-center gap-2 bg-[#0b0f19]/40 p-2 rounded-lg">✅ <span class="text-slate-300">Altura estándar: 70cm a 120cm</span></div>
+                            <div class="flex items-center gap-2 bg-[#0b0f19]/40 p-2 rounded-lg">✅ <span class="text-slate-300">Tronco vertical sin inclinación</span></div>
+                            <div class="flex items-center gap-2 bg-[#0b0f19]/40 p-2 rounded-lg">✅ <span class="text-slate-300">Sin interferencia de pintura o carteles</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Lienzo de Mapa Vectorial SVG Autónomo -->
-        <section class="flex-1 h-3/5 md:h-full relative bg-[#0b0f19] flex items-center justify-center p-4">
-            <div id="canvas-container" class="w-full h-full relative flex items-center justify-center">
-                <!-- El plano SVG se auto-inyecta aquí de manera nativa -->
+        <!-- Sección del Mapa Esquemático de Montevideo -->
+        <section class="flex-1 h-3/5 md:h-full relative bg-[#090d16] flex items-center justify-center p-6 select-none">
+            <div id="map-wrapper" class="w-full h-full max-w-[900px] max-h-[700px] relative rounded-3xl bg-[#0e1322] border border-slate-800/80 shadow-2xl p-4 overflow-hidden flex items-center justify-center">
+                <!-- SVG Canvas Inyectado por JS -->
             </div>
             
-            <!-- Leyenda de colores del mapa -->
-            <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-800 p-3 rounded-xl flex flex-col gap-2 text-[10px] font-mono backdrop-blur-sm z-20">
-                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#ef4444]"></span> Calidad Crítica (fi 0-6)</div>
-                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span> Calidad Moderada (fi 7-12)</div>
-                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#10b981]"></span> Calidad Óptima (fi 13-20)</div>
+            <!-- Leyenda Gráfica -->
+            <div class="absolute bottom-10 right-10 bg-[#111625]/90 border border-slate-800 p-4 rounded-2xl flex flex-col gap-3 text-[10px] font-mono backdrop-blur-md shadow-xl z-20">
+                <div class="text-slate-500 font-bold border-b border-slate-800/60 pb-1.5 uppercase tracking-wider">PUREZA DEL AIRE (fi)</div>
+                <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-gradient-to-tr from-rose-500 to-red-400 shadow-lg shadow-red-500/20"></span> Crítica / Tránsito Alto (0-6)</div>
+                <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-400 shadow-lg shadow-amber-500/20"></span> Moderada / Comercial (7-12)</div>
+                <div class="flex items-center gap-2.5"><span class="w-3 h-3 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-lg shadow-emerald-500/20"></span> Óptima / Espacio Verde (13-20)</div>
             </div>
         </section>
     </main>
